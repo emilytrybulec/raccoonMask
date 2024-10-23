@@ -2,8 +2,6 @@ process TE_TRIMMER {
     tag "$meta.id"
     label 'process_high'
 
-    container 'https://depot.galaxyproject.org/singularity/tetrimmer:1.4.0--hdfd78af_0'
-
     input:
     tuple val(meta), path(curation_fasta)
     tuple val(meta), path(genome_fasta)
@@ -21,7 +19,7 @@ process TE_TRIMMER {
     def prefix = task.ext.prefix ?: "te_${meta.id}"
     """   
     
-    /usr/local/bin/TEtrimmer --input_file $curation_fasta \\
+    python ${projectDir}/assets/TEtrimmer/tetrimmer/TEtrimmer.py --input_file $curation_fasta \\
           --genome_file $genome_fasta \\
           --output_dir . \\
           --num_threads $task.cpus \\
