@@ -3,7 +3,7 @@ process TE_TRIMMER {
     label 'process_high'
     
     container 'https://depot.galaxyproject.org/singularity/tetrimmer:1.4.0--hdfd78af_0'
-    containerOptions = '--writable-tmpfs'
+    containerOptions = '--writable-tmpfs --env XDG_CACHE_HOME=/tmp'
 
     input:
     tuple val(meta), path(curation_fasta)
