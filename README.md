@@ -67,12 +67,12 @@ TEtrimmer is currently being run through a clone of the [`git`](https://github.c
 ```bash
 conda create --name TEtrimmer
 conda install -c conda-forge mamba
-```
-The pipeline will automatically activate the conda environment, but you may test that your environment works using
-```bash
+mamba install bioconda::tetrimmer
 conda activate TEtrimmer
 TEtrimmer --help
 ```
+The pipeline will automatically activate the conda environment when running TEtrimmer.
+
 ## Credits
 
 emilytrybulec/repeat_curation was originally written by Emily Trybulec with the help of Jessica Storer.
