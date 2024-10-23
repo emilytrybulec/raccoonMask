@@ -60,8 +60,19 @@ nextflow run emilytrybulec/repeat_curation \
    -params-file params.yaml
 ```
 
-Xanadu users: please refer to the [`example script`](https://github.com/emilytrybulec/repeat_curation/blob/main/nextflow.sh).
+Xanadu users: please refer to the [`example script`](https://github.com/emilytrybulec/repeat_curation/blob/main/nextflow.sh).    
 
+### Running TEtrimmer:
+TEtrimmer is currently being run through a clone of the [`git`](https://github.com/qjiangzhao/TEtrimmer/blob/main/README.md) located in the assets folder. Users who would like to run TEtrimmer must create the conda environment before running, in accordance with the TEtrimmer usage directions. 
+```bash
+conda create --name TEtrimmer
+conda install -c conda-forge mamba
+```
+The pipeline will automatically activate the conda environment, but you may test that your environment works using
+```bash
+conda activate TEtrimmer
+TEtrimmer --help
+```
 ## Credits
 
 emilytrybulec/repeat_curation was originally written by Emily Trybulec with the help of Jessica Storer.
