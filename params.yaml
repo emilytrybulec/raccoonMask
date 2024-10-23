@@ -1,0 +1,3 @@
+genome_fasta           : "/core/projects/colossalanalyses/Finished_Genomes_for_Annotation/RockHyraxPCA13M_Assembly_and_Reads/RockHyraxPCA13M_v1.fasta"
+outdir                 :  "rock_hyrax_softmask"
+species                : "rock hyrax"
