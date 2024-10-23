@@ -3,9 +3,8 @@ process TE_TRIMMER {
     label 'process_high'
     
     container 'https://depot.galaxyproject.org/singularity/tetrimmer:1.4.0--hdfd78af_0'
-    singularity{
-        runOptions = '--writable-tmpfs --bind $genome_fasta:/genome --bind $curation_fasta:/input'
-    }
+    containerOptions = '--writable-tmpfs --bind $genome_fasta:/genome --bind $curation_fasta:/input'
+
     input:
     tuple val(meta), path(curation_fasta)
     tuple val(meta), path(genome_fasta)
