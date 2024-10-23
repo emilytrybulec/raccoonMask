@@ -2,8 +2,8 @@ process TE_TRIMMER {
     tag "$meta.id"
     label 'process_high'
     
-    container 'https://depot.galaxyproject.org/singularity/tetrimmer:1.4.0--hdfd78af_0'
-    containerOptions = '--writable-tmpfs --env XDG_CACHE_HOME=/tmp'
+    // container 'https://depot.galaxyproject.org/singularity/tetrimmer:1.4.0--hdfd78af_0'
+    // containerOptions = '--writable-tmpfs --env XDG_CACHE_HOME=/tmp'
 
     input:
     tuple val(meta), path(curation_fasta)
@@ -21,7 +21,9 @@ process TE_TRIMMER {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "te_${meta.id}"
     """ 
-    TEtrimmer --input_file $curation_fasta \\
+    conda activate TEtrimmer
+
+    python ${projectDir}/assets/TEtrimmer/tetrimmer/TEtrimmer.py --input_file $curation_fasta \\
           --genome_file $genome_fasta \\
           --output_dir . \\
           --num_threads $task.cpus \\
