@@ -21,7 +21,7 @@ process TE_TRIMMER {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "te_${meta.id}"
     """ 
-    conda activate TEtrimmer
+    source activate TEtrimmer
 
     python ${projectDir}/assets/TEtrimmer/tetrimmer/TEtrimmer.py --input_file $curation_fasta \\
           --genome_file $genome_fasta \\
