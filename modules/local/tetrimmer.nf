@@ -18,8 +18,6 @@ process TE_TRIMMER {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "te_${meta.id}"
     """ 
-    conda create --name TEtrimmer
-    conda install -c conda-forge mamba
     conda activate TEtrimmer
     
     python ${projectDir}/assets/TEtrimmer/tetrimmer/TEtrimmer.py --input_file $curation_fasta \\
