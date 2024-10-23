@@ -46,16 +46,16 @@ def check_progress_file(progress_file_path):
 
     return local_completed_sequences, skipped_count, low_copy_count, classified_pro
 
-def change_permissions_recursive(input_dir, mode):
-    try:
-        for dirpath, dirnames, filenames in os.walk(input_dir):
-            os.chmod(dirpath, mode)
-            for filename in filenames:
-                os.chmod(os.path.join(dirpath, filename), mode)
-    except PermissionError:
-        click.echo("TEtrimmer don't have right to change permissions. Pleas use sudo to run TEtrimmer")
-        return False
-    return True
+#def change_permissions_recursive(input_dir, mode):
+#    try:
+#        for dirpath, dirnames, filenames in os.walk(input_dir):
+#            os.chmod(dirpath, mode)
+#            for filename in filenames:
+#                os.chmod(os.path.join(dirpath, filename), mode)
+#    except PermissionError:
+ #       click.echo("TEtrimmer don't have right to change permissions. Pleas use sudo to run TEtrimmer")
+ #       return False
+#    return True
 
 
 def calculate_genome_length(genome_file):
