@@ -29,7 +29,7 @@ process TE_TRIMMER {
           --num_threads $task.cpus \\
           --classify_all   \\
           --dedup \\
-          --min_blast_len 60 \\
+          --min_blast_len 50 \\
          --cons_thr $cons_thr
     """
 }
