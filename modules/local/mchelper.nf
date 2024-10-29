@@ -18,6 +18,7 @@ process MC_HELPER {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def genes = ref_genes ? "-b $ref_genes" : ""
     """
     source /opt/conda/etc/profile.d/conda.sh
     conda activate MCHelper
@@ -27,7 +28,7 @@ process MC_HELPER {
         -o ${prefix} \\
         -g $genome \\
         --input_type fasta \\
-        -b $ref_genes \\
+        -b $genes \\
         -a F -z 10 -c 3 -v Y
     """
 }
