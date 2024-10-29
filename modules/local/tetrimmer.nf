@@ -2,7 +2,7 @@ process TE_TRIMMER {
     tag "$meta.id"
     label 'process_high'
     
-    container 'emilytrybulec/tetrimmer'
+    container 'docker://emilytrybulec/tetrimmer'
 
     input:
     tuple val(meta), path(curation_fasta)
