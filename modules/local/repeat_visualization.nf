@@ -1,6 +1,6 @@
 process REPEAT_VIEW {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_high'
 
     conda "${moduleDir}/environment.yml"
     container 'library://etrybulec/te_tools2/repeatmasker:sha256.7782aab984b57dbc8c3ff0b554e4f60cd6a1b34f45479ea97866f8fcf0b824d8'
