@@ -17,7 +17,7 @@ process REPEAT_MASKER_2 {
     tuple val(meta), path("*.out"), emit: out
     tuple val(meta), path("*.align") , emit: align
     tuple val(meta), path("*.tbl") , emit: table
-    tuple val(meta), path("*.fasta.masked") , emit: fasta
+    tuple val(meta), path("*.masked") , emit: fasta
 
     when:
     task.ext.when == null || task.ext.when
