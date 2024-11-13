@@ -27,6 +27,9 @@ include { MC_HELPER } from '../modules/local/mchelper'
 
 workflow REPEAT_CURATION {
 
+    params.cluster = "xanadu"
+    params.batchSize = 50000000
+
     ch_db_fasta = Channel.fromPath(params.genome_fasta)
     ch_db_fasta
         .map { file -> tuple(id: file.baseName, file)  }
