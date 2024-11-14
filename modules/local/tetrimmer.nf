@@ -20,7 +20,7 @@ process TE_TRIMMER {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "te_${meta.id}"
     """ 
-    TEtrimmer --input_file $curation_fasta \\
+    python /opt/TEtrimmer/assets/TEtrimmer/tetrimmer/TEtrimmer.py --input_file $curation_fasta \\
           --genome_file $genome_fasta \\
           --output_dir . \\
           --num_threads $task.cpus \\
