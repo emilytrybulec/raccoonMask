@@ -61,7 +61,7 @@ process twoBit {
         'quay.io/biocontainers/ucsc-fatotwobit:469--he8037a5_2 ' }"
 
     input:
-    each file(inSeqFile) from inSeqFiles
+    each file(inSeqFile)
 
     output:
     tuple val(meta), path("*.2bit"), emit: out
