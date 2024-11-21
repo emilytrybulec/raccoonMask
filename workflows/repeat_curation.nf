@@ -80,12 +80,12 @@ workflow REPEAT_CURATION {
             genBatches.out.bed
                 .flatten()
                 .set{ch_batches}
-                .view()
+                
+            ch_batches.view()
 
             ch_batches
                 .combine(twoBit.out.out)
                 .set{ch_batches_2bit}
-                .view()
 
             // twoBittoFa(ch_batches_2bit)
             repeatMasker_fasta = Channel.empty()
