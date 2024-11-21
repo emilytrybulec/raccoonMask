@@ -17,7 +17,7 @@ include { TE_TRIMMER } from '../modules/local/tetrimmer'
 include { TWO_BIT } from '../modules/local/twoBit' 
 include { REPEAT_VIEW } from '../modules/local/repeat_visualization' 
 include { MC_HELPER } from '../modules/local/mchelper' 
-include { genSample; warmupRepeatMasker; twoBit; genBatches; RepeatMasker; combineRMOUTOutput; combineRMAlignOutput } from '../modules/local/repeatmasker_faster' 
+include { genSample; warmupRepeatMasker; twoBit; genBatches; twoBittoFa; RepeatMasker; combineRMOUTOutput; combineRMAlignOutput } from '../modules/local/repeatmasker_faster' 
 
 
 /*
@@ -81,6 +81,7 @@ workflow REPEAT_CURATION {
                 .set{ch_genbatches}
 
             genBatches(warmupRepeatMasker.out.out, params.batchSize, twoBit.out.out)
+            twoBittoFa(genBatches.out.bed)
             repeatMasker_fasta = Channel.empty()
             repeatMasker_align = Channel.empty()
 
