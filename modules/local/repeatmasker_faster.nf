@@ -90,11 +90,11 @@ process genBatches {
   tuple val(meta), path(2bit)
 
   output:
-  tuple val(meta), file("*.2bit"), file("batch_file") , emit: bed
+  tuple val(meta), path("*.2bit"), path("batch_file") , emit: bed
   tuple val(meta), path("*.fa") , emit: out
 
   script:
-  def prefix = task.ext.prefix ?: "${inSeqFile}"
+  def prefix = task.ext.prefix ?: "${2bit}"
   """
   ${projectDir}/assets/genBEDBatches.pl $2bit $batchSize
   
