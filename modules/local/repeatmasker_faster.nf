@@ -91,7 +91,6 @@ process genBatches {
   """
 }
 process twoBittoFa {
-  tag "$meta.id"
   label 'process_mid'
 
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -99,10 +98,10 @@ process twoBittoFa {
         'biocontainers/ucsc-twobittofa:472--h9b8f530_0' }"
 
   input:
-  tuple val(meta), file(batch_bed), file(inSeqFile)
+  file(batch_bed), file(inSeqFile)
 
   output:
-  tuple val(meta), path("*.fa") , emit: out
+  path("*.fa") , emit: out
 
   script:
   def prefix = task.ext.prefix ?: "${inSeqFile}"
