@@ -80,7 +80,7 @@ workflow REPEAT_CURATION {
                 .combine (warmupRepeatMasker.out.out)
                 .set{ch_genbatches}
 
-            genBatches(ch_genbatches, params.batchSize)
+            genBatches(warmupRepeatMasker.out.out, params.batchSize, twoBit.out.out)
             repeatMasker_fasta = Channel.empty()
             repeatMasker_align = Channel.empty()
 
