@@ -1,4 +1,4 @@
-process SEQKIT {
+process genSample {
   tag "$meta.id"
   label 'process_low'
 
