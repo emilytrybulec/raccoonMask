@@ -85,13 +85,12 @@ process genBatches {
         'biocontainers/ucsc-twobittofa:472--h9b8f530_0' }"
 
   input:
-  tuple val(meta), path(warmuplog)
+  tuple val(meta), path(2bit), path(warmuplog)
   val batchSize
-  tuple val(meta), path(2bit)
 
   output:
   tuple val(meta), path("*.2bit"), path("batch_file") , emit: bed
-  tuple val(meta), path("*.fa") , emit: out
+  tuple val(meta), path("*.fa") , emit: fa
 
   script:
   def prefix = task.ext.prefix ?: "${2bit}"
