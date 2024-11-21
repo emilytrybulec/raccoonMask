@@ -83,11 +83,13 @@ workflow REPEAT_CURATION {
             REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, ch_species, params.soft_mask)
             repeatMasker_fasta = REPEAT_MASKER.out.fasta
             repeatMasker_align = REPEAT_MASKER.out.align
-       }
 
         TWO_BIT(repeatMasker_fasta)
 
         REPEAT_VIEW(repeatMasker_align, TWO_BIT.out.out)
+       }
+
+
     }
 
 
