@@ -70,7 +70,7 @@ process twoBit {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${inSeqFile}"
+    def prefix = task.ext.prefix ?: "${genomes}"
     """
     faToTwoBit -long $genomes ${genomes.baseName}.2bit
     """
