@@ -17,6 +17,7 @@ include { TE_TRIMMER } from '../modules/local/tetrimmer'
 include { TWO_BIT } from '../modules/local/twoBit' 
 include { REPEAT_VIEW } from '../modules/local/repeat_visualization' 
 include { MC_HELPER } from '../modules/local/mchelper' 
+include { SEQKIT; warmupRepeatMasker; twoBit; genBatches; RepeatMasker; combineRMOUTOutput; combineRMAlignOutput } from '../modules/local/repeatmasker_faster' 
 
 
 /*
@@ -67,10 +68,18 @@ workflow REPEAT_CURATION {
 
     if (params.repeat_masker == true){
         if(params.species == null){
-            REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask)
+            ch_species = Channel.empty()
+        } else {ch_species = params.species}
+
+        if (params.cluster == xanadu){
+            SEQKIT(ch_genome_fasta)
+            warmupRepeatMasker(SEQKIT.out.out, ch_species)
+            twoBit(ch_genome_fasta)
+            genBatches(warmupRepeatMasker.out.out, params.batchSize, twoBit.out.out)
+
         } else {
-            REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask)
-        }
+            REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, ch_species, params.soft_mask)
+       }
 
         TWO_BIT(REPEAT_MASKER.out.fasta)
 
