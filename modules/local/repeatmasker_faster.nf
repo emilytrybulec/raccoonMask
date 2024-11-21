@@ -1,76 +1,107 @@
-process warmupRepeatMasker {
+process SEQKIT {
+  tag "$meta.id"
+  label 'process_low'
+
+  conda "bioconda::seqkit=2.4.0"
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/seqkit:2.4.0--h9ee0642_0':
+        'biocontainers/seqkit:2.4.0--h9ee0642_0' }"
 
   input:
-  path(small_seq) from warmup_chan
+  tuple val(meta), path(genome_fasta)
 
   output:
-  path("*.rmlog") into done_warmup_chan
+  tuple val(meta), path("*.fasta"), emit: out
 
   script:
+  """
+  seqkit fx2tab $genome_fasta | \\
+  awk '{if (length(\$2) > 25000) print \$1, length(\$2)}' | \\
+  shuf -n 1 | \\
+  awk '{srand(); start=int(rand()*(\$2-25000)); print \$1, start+1, start+25000}' | \\
+  while read id start end; do seqkit subseq -r \${start}:\${end} -i $genome_fasta; done
+  """
+}
+
+process warmupRepeatMasker {
+  tag "$meta.id"
+  label 'process_mid'
+
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/repeatmasker:4.1.7p1--pl5321hdfd78af_1' :
+        'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_1' }"
+
+  input:
+  tuple val(meta), path(small_seq)
+  val species
+
+  output:
+  tuple val(meta), path("*.rmlog"), emit: out
+
+  script:
+  def species = species ? "-species ${species}" : ''
+  def prefix = task.ext.prefix ?: "${meta.id}"
   """
   #
   # Run RepeatMasker with "-species" option on a small sequence in order to
   # force it to initialize the cached libraries.  Do not want to do this on the
   # cluster ( in parallel ) as it may cause each job to attempt the build at once.
   #
-  hostname > node
-  ${repeatMaskerDir}/RepeatMasker ${otherOptions} ${small_seq.baseName}.fa >& ${small_seq.baseName}.rmlog
+  RepeatMasker ${species} $small_seq >& ${prefix}.rmlog
   """
 }
 
 process genBatches {
-  executor = thisExecutor
-  queue = thisQueue
-  clusterOptions = thisOptions
-  scratch = thisScratch
+  tag "$meta.id"
+  label 'process_mid'
+
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/ucsc-twobittofa:472--h9b8f530_0' :
+        'biocontainers/ucsc-twobittofa:472--h9b8f530_0' }"
 
   input:
-  path(warmuplog) from done_warmup_chan
-  each file(inSeqFile) from inSeqFiles
+  tuple val(meta), path(genome_2bit)
+  val batchSize
 
   output:
-  tuple file("${inSeqFile.baseName}.2bit"), file("batch*.bed") into batchChan 
+  val(meta), path("batch*.bed") , emit: bed
+  val(meta), path("*.fa") , emit: out
 
   script:
+  def prefix = task.ext.prefix ?: "${meta.id}"
   """
-  # Generate 2bit files if necessary
-  if [ ${inSeqFile.extension} == "gz" ]; then
-    gunzip -c ${inSeqFile} | ${ucscToolsDir}/faToTwoBit -long stdin ${inSeqFile.baseName}.2bit
-  elif [ ${inSeqFile.extension} == "2bit" ]; then
-    # Ah....the luxury of 2bit
-    sleep 0
-  else
-    ${ucscToolsDir}/faToTwoBit -long ${inSeqFile} ${inSeqFile.baseName}.2bit
-  fi  
- 
-  # This can magically accept FASTA, Gzip'd FASTA, or 2BIT...but 2Bit is prob. fastest
-  export UCSCTOOLSDIR=${ucscToolsDir}
-  ${workflow.projectDir}/genBEDBatches.pl ${inSeqFile.baseName}.2bit ${batchSize}
+  ${workflow.projectDir}/genBEDBatches.pl $genome_2bit $batchSize
+  
+  twoBitToFa -bed=*.bed $genome_2bit ${prefix}.fa
+
   """
 }
 
 process RepeatMasker {
-  executor = thisExecutor
-  queue = thisQueue
-  clusterOptions = thisOptions
-  scratch = thisScratch
+  tag "$meta.id"
+  label 'process_mid'
+
+  conda "${moduleDir}/environment.yml"
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/repeatmasker:4.1.7p1--pl5321hdfd78af_1' :
+        'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_1' }"
 
   input:
-  file inLibFile from opt_libFile
-  set path(inSeqTwoBitFile), path(batch_file) from batchChan.transpose()
+  tuple val(meta), path(curation_fasta)
+  tuple val(meta), path(inSeqTwoBitFile), path(bed)
+  val species
+  val soft_mask
 
   output:
-  tuple path(inSeqTwoBitFile), path("${batch_file.baseName}.fa.out") into rmoutChan
+  tuple path(inSeqTwoBitFile), path("*.fa.out") 
   tuple path(inSeqTwoBitFile), path("${batch_file.baseName}.fa.align") into rmalignChan
 
   script:
-  def libOpt = inLibFile.name != 'NO_FILE' ? "-lib $inLibFile" : "-species '" + species + "'"
   """
   #
   # Run RepeatMasker and readjust coordinates
   #
-  ${ucscToolsDir}/twoBitToFa -bed=${batch_file} ${inSeqTwoBitFile} ${batch_file.baseName}.fa
-  ${repeatMaskerDir}/RepeatMasker -pa ${pa_param} -a ${otherOptions} ${libOpt} ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
+  RepeatMasker -pa $task.cpus -a ${libOpt} ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
   export REPEATMASKER_DIR=${repeatMaskerDir}
   ${workflow.projectDir}/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
   ${workflow.projectDir}/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
