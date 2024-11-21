@@ -121,14 +121,13 @@ process RepeatMasker {
         'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_1' }"
 
   input:
-  tuple val(meta), path(curation_fasta)
-  tuple val(meta), path(inSeqTwoBitFile), path(bed)
+  tuple val(meta), path(curation_fasta), path(batch_file)
   val species
   val soft_mask
 
   output:
-  tuple val(meta), path(inSeqTwoBitFile), path("*.fa.out") 
-  tuple path(inSeqTwoBitFile), path("${batch_file.baseName}.fa.align") into rmalignChan
+  tuple val(meta), path("*.fa.out") , emit: out
+  tuple val(meta), path("*.fa.align") , emit: align
 
   script:
   def species = species ? "-species ${species}" : ''
