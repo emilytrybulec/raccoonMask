@@ -87,7 +87,7 @@ process genBatches {
   script:
   def prefix = task.ext.prefix ?: "${inSeqFile}"
   """
-  perl ${projectDir}/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
+  perl ${projectDir}/assets/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
   """
 }
 process twoBittoFa {
