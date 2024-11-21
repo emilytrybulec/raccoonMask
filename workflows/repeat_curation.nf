@@ -75,7 +75,12 @@ workflow REPEAT_CURATION {
             SEQKIT(ch_genome_fasta)
             warmupRepeatMasker(SEQKIT.out.out, ch_species)
             twoBit(ch_genome_fasta)
-            genBatches(warmupRepeatMasker.out.out, params.batchSize, twoBit.out.out)
+
+            twoBit.out.out    
+                .combine (warmupRepeatMasker.out.out)
+                .set{ch_genbatches}
+
+            genBatches(ch_genbatches, params.batchSize)
             repeatMasker_fasta = Channel.empty()
             repeatMasker_align = Channel.empty()
 
