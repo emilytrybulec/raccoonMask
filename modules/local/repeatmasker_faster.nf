@@ -82,7 +82,7 @@ process genBatches {
   file(inSeqFile)
 
   output:
-  file("*bed") , emit: bed
+  path("*bed") , emit: bed
 
   script:
   def prefix = task.ext.prefix ?: "${inSeqFile}"
