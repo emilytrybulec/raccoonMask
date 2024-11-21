@@ -72,14 +72,13 @@ process twoBit {
     faToTwoBit -long $genomes ${genomes.baseName}.2bit
     """
 }
-
 process genBatches {
   tag "$meta.id"
   label 'process_mid'
 
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ucsc-twobittofa:472--h9b8f530_0' :
-        'biocontainers/ucsc-twobittofa:472--h9b8f530_0' }"
+        'https://depot.galaxyproject.org/singularity/perl:5.32' :
+        'biocontainers/perl:5.32' }"
 
   input:
   tuple val(meta), path(warmuplog)
@@ -94,8 +93,27 @@ process genBatches {
   def prefix = task.ext.prefix ?: "${inSeqFile}"
   """
   perl ${projectDir}/assets/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
+  """
+}
+process twoBittoFa {
+  tag "$meta.id"
+  label 'process_mid'
+
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/ucsc-twobittofa:472--h9b8f530_0' :
+        'biocontainers/ucsc-twobittofa:472--h9b8f530_0' }"
+
+  input:
+  tuple val(meta), file(inSeqFile), file(batch_bed) , emit: bed
+
+  output:
+  tuple val(meta), path("*.fa") , emit: out
+
+  script:
+  def prefix = task.ext.prefix ?: "${inSeqFile}"
+  """
   
-  twoBitToFa -bed=*.bed ${inSeqFile} ${inSeqFile.baseName}.fa
+  twoBitToFa -bed=$batch_bed ${inSeqFile} ${batch_bed.baseName}.fa
   """
 }
 
