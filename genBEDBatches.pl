@@ -5,9 +5,17 @@ use Data::Dumper;
 # Where this script can find twoBitInfo 
 # NOTE: This is set by the Nextflow script
 my $ucscBinDir = "";
-if ( -d $ENV{'UCSCTOOLSDIR'} && -s $ENV{'UCSCTOOLSDIR'} . "/twoBitInfo" ) {
+
+my $containerImage = "singularity exec https://depot.galaxyproject.org/singularity/ucsc-twobitinfo:472--h9b8f530_0";
+
+# Check if UCSC tools directory is set in the environment
+if ( defined $ENV{'UCSCTOOLSDIR'} && -d $ENV{'UCSCTOOLSDIR'} && -s $ENV{'UCSCTOOLSDIR'} . "/twoBitInfo" ) {
   $ucscBinDir = $ENV{'UCSCTOOLSDIR'};
   $ucscBinDir .= "/" if ( $ucscBinDir !~ /^.*\/$/ );
+} else {
+  # Fallback to using the containerized UCSC tools
+  print STDERR "Using containerized UCSC tools: $containerImage\n";
+  $ucscBinDir = $containerImage;
 }
 
 my $seqFile = $ARGV[0];
