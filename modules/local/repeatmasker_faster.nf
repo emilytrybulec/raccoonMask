@@ -19,7 +19,7 @@ process SEQKIT {
   awk '{if (length(\$2) > 25000) print \$1, length(\$2)}' | \\
   shuf -n 1 | \\
   awk '{srand(); start=int(rand()*(\$2-25000)); print \$1, start+1, start+25000}' | \\
-  while read id start end; do seqkit subseq -r \${start}:\${end} -i $genome_fasta; done
+  while read id start end; do seqkit subseq -r \${start}:\${end} $genome_fasta -w 0; done
   """
 }
 
