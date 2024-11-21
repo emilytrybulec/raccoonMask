@@ -115,19 +115,14 @@ process RepeatMasker {
   tag "$meta.id"
   label 'process_mid'
 
-  conda "${moduleDir}/environment.yml"
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/repeatmasker:4.1.7p1--pl5321hdfd78af_1' :
-        'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_1' }"
-
   input:
   tuple val(meta), path(curation_fasta), path(batch_file)
   val species
   val soft_mask
 
   output:
-  path("*.out") , emit: out
-  path("*.align") , emit: align
+  tuple val(meta), path("*.out") , emit: out
+  tuple val(meta), path("*.align") , emit: align
   tuple val(meta), path("*.masked") , emit: masked
 
   script:
@@ -138,27 +133,7 @@ process RepeatMasker {
   #
   # Run RepeatMasker
   #
-  RepeatMasker -s -e ncbi $libOpt -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
-  """
-}
-process RepeatMaskerOutput {
-  tag "$meta.id"
-  label 'process_mid'
-
-  input:
-  tuple val(meta), path(batch_file), path(out), path(align)
-
-  output:
-  tuple val(meta), path("*.out") , emit: out
-  tuple val(meta), path("*.align") , emit: align
-
-  script:
-
-  """
-  #
-  #readjust coordinates
-  #
-
+  /core/labs/Oneill/jstorer/RepeatMasker/RepeatMasker -s -e ncbi $libOpt -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
   cp ${batch_file.baseName}.fa.out ${batch_file.baseName}.fa.out.unadjusted
@@ -166,6 +141,7 @@ process RepeatMaskerOutput {
   mv ${batch_file.baseName}.fa.align.adjusted ${batch_file.baseName}.fa.align
   """
 }
+
 process combineRMOUTOutput {
 
   input:
