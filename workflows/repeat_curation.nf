@@ -86,6 +86,12 @@ workflow REPEAT_CURATION {
                 .set{ch_batches_2bit}
 
             twoBittoFa(ch_batches_2bit)
+
+            ch_consensus_fasta
+                .combine(twoBittoFa.out.fa)
+                .set{ch_rm_batches}
+
+            RepeatMasker(ch_rm_batches)
             repeatMasker_fasta = Channel.empty()
             repeatMasker_align = Channel.empty()
 
