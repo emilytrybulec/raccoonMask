@@ -91,7 +91,7 @@ process genBatches {
   each file(inSeqFile)
 
   output:
-  val(meta), file("${inSeqFile.baseName}.2bit"), file("batch_file") , emit: bed
+  val(meta), file("*.2bit"), file("batch_file") , emit: bed
   val(meta), path("*.fa") , emit: out
 
   script:
