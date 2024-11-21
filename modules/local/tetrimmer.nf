@@ -23,6 +23,7 @@ process TE_TRIMMER {
 
     mkdir -p tmp/fontconfig
     export FONTCONFIG_CACHE= tmp/fontconfig
+    export TMPDIR=$PWD/tmp
 
     python /opt/TEtrimmer/assets/TEtrimmer/tetrimmer/TEtrimmer.py --input_file $curation_fasta \\
           --genome_file $genome_fasta \\
