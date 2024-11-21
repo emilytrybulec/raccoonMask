@@ -76,10 +76,6 @@ process genBatches {
   tag "$meta.id"
   label 'process_mid'
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/perl:5.32' :
-        'biocontainers/perl:5.32' }"
-
   input:
   tuple val(meta), path(warmuplog)
   val batchSize
