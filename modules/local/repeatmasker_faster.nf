@@ -52,7 +52,6 @@ process warmupRepeatMasker {
 }
 
 process twoBit {
-  tag "$meta.id"
     label 'process_low'
 
     conda "bioconda::ucsc-fatotwobit:469--he8037a5_2"
