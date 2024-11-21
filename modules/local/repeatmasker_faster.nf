@@ -98,16 +98,16 @@ process twoBittoFa {
         'biocontainers/ucsc-twobittofa:472--h9b8f530_0' }"
 
   input:
-  file(batch_bed), file(inSeqFile)
+  file(batch_bed), file(2bit)
 
   output:
   path("*.fa") , emit: out
 
   script:
-  def prefix = task.ext.prefix ?: "${inSeqFile}"
+  def prefix = task.ext.prefix ?: "${2bit}"
   """
   
-  twoBitToFa -bed=$batch_bed ${inSeqFile} ${batch_bed.baseName}.fa
+  twoBitToFa -bed=$batch_bed $2bit ${batch_bed.baseName}.fa
   """
 }
 
