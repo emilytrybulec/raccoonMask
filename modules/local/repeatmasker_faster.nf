@@ -88,7 +88,7 @@ process genBatches {
   input:
   tuple val(meta), path(warmuplog)
   val batchSize
-  each file(inSeqFile) from inSeqFiles
+  each file(inSeqFile)
 
   output:
   val(meta), path("batch*.bed") , emit: bed
@@ -139,20 +139,14 @@ process RepeatMasker {
 }
 
 process combineRMOUTOutput {
-  executor = thisExecutor
-  queue = thisQueue
-  clusterOptions = thisAdjOptions
-  scratch = thisScratch
-
-  publishDir "${outputDir}", mode: 'copy'
 
   input:
-  tuple file(twoBitFile), file(outfiles) from rmoutChan.map { tb, outf -> [ tb.toRealPath(), outf ]}.groupTuple()
+  tuple file(twoBitFile), file(outfiles) 
 
   output:
   file("*.rmout.gz")
   file("*.summary")
-  file("combOutSorted-translation.tsv") into rmAlignTransChan
+  file("combOutSorted-translation.tsv") 
   
   script:
   """
@@ -169,16 +163,10 @@ process combineRMOUTOutput {
 }
 
 process combineRMAlignOutput {
-  executor = thisExecutor
-  queue = thisQueue
-  clusterOptions = thisAdjOptions
-  scratch = thisScratch
-
-  publishDir "${outputDir}", mode: 'copy'
 
   input:
-  tuple file(twoBitFile), file(alignfiles) from rmalignChan.map { tb, alignf -> [ tb.toRealPath(), alignf ]}.groupTuple()
-  file transFile from rmAlignTransChan
+  tuple file(twoBitFile), file(alignfiles) 
+  file transFile 
   
   output:
   file("*.rmalign.gz")
