@@ -15,7 +15,7 @@ process SEQKIT {
 
   script:
   """
-  awk 'BEGIN {seq_id=""; seq=""; srand()} {if ($0 ~ /^>/) {if (seq_id != "" && length(seq) >= 25000) {start = int(rand() * (length(seq) - 25000 + 1)) + 1; print seq_id; print substr(seq, start, 25000); exit} seq_id = $0; seq = ""} else {seq = seq $0}} END {if (seq_id != "" && length(seq) >= 25000) {start = int(rand() * (length(seq) - 25000 + 1)) + 1; print seq_id; print substr(seq, start, 25000)}}' $genome_fasta > sample.fasta
+  awk 'BEGIN {seq_id=""; seq=""; srand()} {if (\$0 ~ /^>/) {if (seq_id != "" && length(seq) >= 25000) {start = int(rand() * (length(seq) - 25000 + 1)) + 1; print seq_id; print substr(seq, start, 25000); exit} seq_id = \$0; seq = ""} else {seq = seq \$0}} END {if (seq_id != "" && length(seq) >= 25000) {start = int(rand() * (length(seq) - 25000 + 1)) + 1; print seq_id; print substr(seq, start, 25000)}}' $genome_fasta > sample.fasta
 
   """
 }
