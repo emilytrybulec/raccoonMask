@@ -85,20 +85,20 @@ process genBatches {
         'biocontainers/ucsc-twobittofa:472--h9b8f530_0' }"
 
   input:
-  tuple val(meta), path(2bit), path(warmuplog)
+  tuple val(meta), path(warmuplog)
   val batchSize
+  file(inSeqFile)
 
   output:
-  tuple val(meta), path("*.2bit"), path("*bed") , emit: bed
-  tuple val(meta), path("*.fa") , emit: fa
+  tuple val(meta), file("*.2bit"), file("*bed") , emit: bed
+  tuple val(meta), path("*.fa") , emit: out
 
   script:
-  def prefix = task.ext.prefix ?: "${2bit}"
+  def prefix = task.ext.prefix ?: "${inSeqFile}"
   """
-  ${projectDir}/assets/genBEDBatches.pl $2bit $batchSize
+  ${projectDir}/assets/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
   
-  twoBitToFa -bed=*bed $2bit ${2bit.baseName}.fa
-
+  twoBitToFa -bed=*.bed ${inSeqFile} ${inSeqFile.baseName}.fa
   """
 }
 
