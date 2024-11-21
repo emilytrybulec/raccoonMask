@@ -15,11 +15,32 @@ process SEQKIT {
 
   script:
   """
-  seqkit fx2tab $genome_fasta | \\
-  awk '{if (length(\$2) > 25000) print \$1, length(\$2)}' | \\
-  shuf -n 1 | \\
-  awk '{srand(); start=int(rand()*(\$2-25000)); print \$1, start+1, start+25000}' | \\
-  while read id start end; do seqkit subseq -r \${start}:\${end} $genome_fasta -w 0; done
+  awk '
+  BEGIN {seq_id=""; seq=""; srand()}
+  {
+      if ($0 ~ /^>/) {
+          # Process the previous sequence if it exists and has the required length
+          if (seq_id != "" && length(seq) >= 25000) {
+              start = int(rand() * (length(seq) - 25000 + 1)) + 1
+              print seq_id "\n" substr(seq, start, 25000)
+              exit
+          }
+          # Reset for the new sequence
+           seq_id = $0
+           seq = ""
+      } else {
+          # Accumulate sequence lines
+          seq = seq $0
+      }
+  }
+  END {
+      # Process the last sequence if we didn't find a window earlier
+      if (seq_id != "" && length(seq) >= 25000) {
+          start = int(rand() * (length(seq) - 25000 + 1)) + 1
+          print seq_id "\n" substr(seq, start, 25000)
+      }
+  }' $genome_fasta > sample.fasta
+
   """
 }
 
