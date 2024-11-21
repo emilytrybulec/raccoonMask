@@ -18,7 +18,7 @@ process SEQKIT {
   awk '
   BEGIN {seq_id=""; seq=""; srand()}
   {
-      if ($0 ~ /^>/) {
+      if (\$0 ~ /^>/) {
           # Process the previous sequence if it exists and has the required length
           if (seq_id != "" && length(seq) >= 25000) {
               start = int(rand() * (length(seq) - 25000 + 1)) + 1
@@ -26,11 +26,11 @@ process SEQKIT {
               exit
           }
           # Reset for the new sequence
-           seq_id = $0
+           seq_id = \$0
            seq = ""
       } else {
           # Accumulate sequence lines
-          seq = seq $0
+          seq = seq \$0
       }
   }
   END {
