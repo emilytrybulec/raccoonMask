@@ -89,7 +89,7 @@ process genBatches {
   val batchSize
 
   output:
-  tuple val(meta), path("*.2bit"), path("batch_file") , emit: bed
+  tuple val(meta), path("*.2bit"), path("*bed") , emit: bed
   tuple val(meta), path("*.fa") , emit: fa
 
   script:
@@ -97,7 +97,7 @@ process genBatches {
   """
   ${projectDir}/assets/genBEDBatches.pl $2bit $batchSize
   
-  twoBitToFa -bed=$batch_file $2bit ${batch_file.baseName}.fa
+  twoBitToFa -bed=*bed $2bit ${2bit.baseName}.fa
 
   """
 }
