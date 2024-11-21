@@ -63,7 +63,7 @@ process twoBit {
     tuple val(meta), path(genomes)
 
     output:
-    tuple val(meta), path("*.2bit"), emit: out
+    path("*.2bit"), emit: out
 
     when:
     task.ext.when == null || task.ext.when
