@@ -4,11 +4,7 @@ use Data::Dumper;
 
 # Where this script can find twoBitInfo 
 # NOTE: This is set by the Nextflow script
-my $ucscBinDir = "";
-if ( -d $ENV{'UCSCTOOLSDIR'} && -s $ENV{'UCSCTOOLSDIR'} . "/twoBitInfo" ) {
-  $ucscBinDir = $ENV{'UCSCTOOLSDIR'};
-  $ucscBinDir .= "/" if ( $ucscBinDir !~ /^.*\/$/ );
-}
+my $ucscBinDir = "/isg/shared/apps/ucsc_genome/2012.05.22/";
 
 my $seqFile = $ARGV[0];
 my $maxSize = $ARGV[1];
