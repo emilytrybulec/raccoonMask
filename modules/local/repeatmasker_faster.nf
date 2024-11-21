@@ -133,11 +133,12 @@ process RepeatMasker {
   script:
   def species = species ? "-species ${species}" : ''
   def soft_mask = soft_mask ? "-xsmall" : ''
+  def libOpt = curation_fasta.contains != '.fa' ? "-species ${species}" :  "-lib $curation_fasta"
   """
   #
   # Run RepeatMasker
   #
-  RepeatMasker -s -e ncbi -lib $curation_fasta -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
+  RepeatMasker -s -e ncbi $libOpt -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
   """
 }
 process RepeatMaskerOutput {
