@@ -88,7 +88,7 @@ workflow REPEAT_CURATION {
             twoBittoFa(ch_batches_2bit)
 
             ch_consensus_fasta
-                .combine(twoBittoFa.out.fa)
+                .combine(twoBittoFa.out.out)
                 .set{ch_rm_batches}
 
             RepeatMasker(ch_rm_batches)
