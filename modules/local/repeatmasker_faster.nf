@@ -71,7 +71,7 @@ process twoBit {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${inSeqFile}"
     """
     faToTwoBit -long ${inSeqFile} ${inSeqFile.baseName}.2bit
     """
@@ -91,11 +91,11 @@ process genBatches {
   each file(inSeqFile)
 
   output:
-  val(meta), file("*.2bit"), file("batch_file") , emit: bed
-  val(meta), path("*.fa") , emit: out
+  tuple val(meta), file("*.2bit"), file("batch_file") , emit: bed
+  tuple val(meta), path("*.fa") , emit: out
 
   script:
-  def prefix = task.ext.prefix ?: "${meta.id}"
+  def prefix = task.ext.prefix ?: "${inSeqFile}"
   """
   ${projectDir}/assets/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
   
@@ -120,7 +120,7 @@ process RepeatMasker {
   val soft_mask
 
   output:
-  tuple path(inSeqTwoBitFile), path("*.fa.out") 
+  tuple val(meta), path(inSeqTwoBitFile), path("*.fa.out") 
   tuple path(inSeqTwoBitFile), path("${batch_file.baseName}.fa.align") into rmalignChan
 
   script:
