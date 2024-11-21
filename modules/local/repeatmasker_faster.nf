@@ -126,17 +126,38 @@ process RepeatMasker {
   val soft_mask
 
   output:
-  tuple val(meta), path("*.fa.out") , emit: out
-  tuple val(meta), path("*.fa.align") , emit: align
+  path("*.out") , emit: out
+  path("*.align") , emit: align
+  tuple val(meta), path("*.masked") , emit: masked
 
   script:
   def species = species ? "-species ${species}" : ''
   def soft_mask = soft_mask ? "-xsmall" : ''
   """
   #
-  # Run RepeatMasker and readjust coordinates
+  # Run RepeatMasker
   #
   RepeatMasker -s -e ncbi -lib $curation_fasta -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
+  """
+}
+process RepeatMaskerOutput {
+  tag "$meta.id"
+  label 'process_mid'
+
+  input:
+  tuple val(meta), path(batch_file), path(out), path(align)
+
+  output:
+  tuple val(meta), path("*.out") , emit: out
+  tuple val(meta), path("*.align") , emit: align
+
+  script:
+
+  """
+  #
+  #readjust coordinates
+  #
+
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
   cp ${batch_file.baseName}.fa.out ${batch_file.baseName}.fa.out.unadjusted
@@ -144,7 +165,6 @@ process RepeatMasker {
   mv ${batch_file.baseName}.fa.align.adjusted ${batch_file.baseName}.fa.align
   """
 }
-
 process combineRMOUTOutput {
 
   input:
