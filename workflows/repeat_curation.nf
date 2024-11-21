@@ -85,9 +85,9 @@ workflow REPEAT_CURATION {
             repeatMasker_align = REPEAT_MASKER.out.align
        }
 
-        TWO_BIT(REPEAT_MASKER.out.fasta)
+        TWO_BIT(repeatMasker_fasta)
 
-        REPEAT_VIEW(REPEAT_MASKER.out.align, TWO_BIT.out.out)
+        REPEAT_VIEW(repeatMasker_align, TWO_BIT.out.out)
     }
 
 
