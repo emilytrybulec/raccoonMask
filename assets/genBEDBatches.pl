@@ -2,8 +2,6 @@
 use strict;
 use Data::Dumper;
 
-# Where this script can find twoBitInfo 
-# NOTE: This is set by the Nextflow script
 my $ucscBinDir = "/isg/shared/apps/ucsc_genome/2012.05.22/";
 
 my $seqFile = $ARGV[0];
