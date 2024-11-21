@@ -91,7 +91,7 @@ process genBatches {
   each file(inSeqFile)
 
   output:
-  val(meta), path("batch*.bed") , emit: bed
+  val(meta), file("${inSeqFile.baseName}.2bit"), file("batch_file") , emit: bed
   val(meta), path("*.fa") , emit: out
 
   script:
@@ -99,7 +99,7 @@ process genBatches {
   """
   ${projectDir}/assets/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
   
-  twoBitToFa -bed=*.bed ${inSeqFile.baseName} ${prefix}.fa
+  twoBitToFa -bed=$batch_file ${inSeqFile} ${batch_file.baseName}.fa
 
   """
 }
