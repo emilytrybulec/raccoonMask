@@ -71,7 +71,7 @@ workflow REPEAT_CURATION {
             ch_species = Channel.empty()
         } else {ch_species = params.species}
 
-        if (params.cluster == xanadu){
+        if (params.cluster == 'xanadu'){
             SEQKIT(ch_genome_fasta)
             warmupRepeatMasker(SEQKIT.out.out, ch_species)
             twoBit(ch_genome_fasta)
