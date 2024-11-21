@@ -36,7 +36,7 @@ process warmupRepeatMasker {
   val species
 
   output:
-  tuple val(meta), path("*.rmlog"), emit: out
+  path("*.rmlog"), emit: out
 
   script:
   def species = species ? "-species ${species}" : ''
