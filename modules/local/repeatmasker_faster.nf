@@ -136,7 +136,7 @@ process RepeatMasker {
   #
   # Run RepeatMasker and readjust coordinates
   #
-  RepeatMasker -s -e ncbi -lib $curation_fasta -pa $task.cpus -a $species $softmask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
+  RepeatMasker -s -e ncbi -lib $curation_fasta -pa $task.cpus -a $species $soft_mask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
   cp ${batch_file.baseName}.fa.out ${batch_file.baseName}.fa.out.unadjusted
