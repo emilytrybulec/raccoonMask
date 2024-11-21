@@ -93,7 +93,7 @@ process genBatches {
   script:
   def prefix = task.ext.prefix ?: "${inSeqFile}"
   """
-  ${projectDir}/assets/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
+  perl ${projectDir}/assets/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
   
   twoBitToFa -bed=*.bed ${inSeqFile} ${inSeqFile.baseName}.fa
   """
