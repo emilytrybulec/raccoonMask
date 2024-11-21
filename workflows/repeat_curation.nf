@@ -91,7 +91,7 @@ workflow REPEAT_CURATION {
                 .combine(twoBittoFa.out.out)
                 .set{ch_rm_batches}
 
-            RepeatMasker(ch_rm_batches)
+            RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
             repeatMasker_fasta = Channel.empty()
             repeatMasker_align = Channel.empty()
 
