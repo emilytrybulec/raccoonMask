@@ -87,7 +87,6 @@ process genBatches {
 
   output:
   tuple val(meta), file("*.2bit"), file("*bed") , emit: bed
-  tuple val(meta), path("*.fa") , emit: out
 
   script:
   def prefix = task.ext.prefix ?: "${inSeqFile}"
