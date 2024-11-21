@@ -97,7 +97,7 @@ process genBatches {
   script:
   def prefix = task.ext.prefix ?: "${meta.id}"
   """
-  ${workflow.projectDir}/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
+  ${projectDir}/assets/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
   
   twoBitToFa -bed=*.bed ${inSeqFile.baseName} ${prefix}.fa
 
@@ -130,8 +130,8 @@ process RepeatMasker {
   #
   RepeatMasker -pa $task.cpus -a ${libOpt} ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
   export REPEATMASKER_DIR=${repeatMaskerDir}
-  ${workflow.projectDir}/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
-  ${workflow.projectDir}/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
+  ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
+  ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
   cp ${batch_file.baseName}.fa.out ${batch_file.baseName}.fa.out.unadjusted
   mv ${batch_file.baseName}.fa.out.adjusted ${batch_file.baseName}.fa.out
   mv ${batch_file.baseName}.fa.align.adjusted ${batch_file.baseName}.fa.align
@@ -154,7 +154,7 @@ process combineRMOUTOutput {
   echo "   SW   perc perc perc  query     position in query    matching          repeat       position in repeat" > combOutSorted
   echo "score   div. del. ins.  sequence  begin end   (left)   repeat            class/family begin  end    (left)  ID" >> combOutSorted
   grep -v -e "^\$" combOut | sort -k5,5 -k6,6n -T ${workflow.workDir} >> combOutSorted
-  ${workflow.projectDir}/renumberIDs.pl combOutSorted > combOutSortedRenumbered
+  ${projectDir}/assets/renumberIDs.pl combOutSorted > combOutSortedRenumbered
   mv translation-out.tsv combOutSorted-translation.tsv
   export PATH=${ucscToolsDir}/\$PATH
   ${repeatMaskerDir}/util/buildSummary.pl -genome ${twoBitFile} -useAbsoluteGenomeSize combOutSortedRenumbered > ${twoBitFile.baseName}.summary
@@ -174,12 +174,12 @@ process combineRMAlignOutput {
   script:
   """
   for f in ${alignfiles}; do cat \$f >> combAlign; done
-  ####${workflow.projectDir}/alignToBed.pl -fullAlign combAlign | ${ucscToolsDir}/bedSort stdin stdout | ${workflow.projectDir}/bedToAlign.pl > combAlign-sorted
-  ${workflow.projectDir}/alignToBed.pl -fullAlign combAlign > tmp.bed
+  ####${projectDir}/assets/alignToBed.pl -fullAlign combAlign | ${ucscToolsDir}/bedSort stdin stdout | ${workflow.projectDir}/bedToAlign.pl > combAlign-sorted
+  ${projectDir}/assets/alignToBed.pl -fullAlign combAlign > tmp.bed
   # Be mindful of this buffer size...should probably make this a parameter
   sort -k1,1V -k2,2n -k3,3nr -S 3G -T ${workflow.workDir} tmp.bed > tmp.bed.sorted
-  ${workflow.projectDir}/bedToAlign.pl tmp.bed.sorted > combAlign-sorted
-  ${workflow.projectDir}/renumberIDs.pl -translation ${transFile} combAlign-sorted > combAlign-sorted-renumbered
+  ${projectDir}/assets/bedToAlign.pl tmp.bed.sorted > combAlign-sorted
+  ${projectDir}/assets/renumberIDs.pl -translation ${transFile} combAlign-sorted > combAlign-sorted-renumbered
   gzip -c combAlign-sorted-renumbered > ${twoBitFile.baseName}.rmalign.gz
   """
 }
