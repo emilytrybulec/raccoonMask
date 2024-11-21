@@ -131,12 +131,13 @@ process RepeatMasker {
   tuple path(inSeqTwoBitFile), path("${batch_file.baseName}.fa.align") into rmalignChan
 
   script:
+  def species = species ? "-species ${species}" : ''
+  def soft_mask = soft_mask ? "-xsmall" : ''
   """
   #
   # Run RepeatMasker and readjust coordinates
   #
-  RepeatMasker -pa $task.cpus -a ${libOpt} ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
-  export REPEATMASKER_DIR=${repeatMaskerDir}
+  RepeatMasker -s -e ncbi -lib $curation_fasta -pa $task.cpus -a $species $softmask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
   cp ${batch_file.baseName}.fa.out ${batch_file.baseName}.fa.out.unadjusted
