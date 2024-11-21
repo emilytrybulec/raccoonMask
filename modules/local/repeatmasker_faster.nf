@@ -61,7 +61,7 @@ process twoBit {
         'quay.io/biocontainers/ucsc-fatotwobit:469--he8037a5_2 ' }"
 
     input:
-    tuple val(meta), path(repeats)
+    each file(inSeqFile) from inSeqFiles
 
     output:
     tuple val(meta), path("*.2bit"), emit: out
@@ -73,7 +73,7 @@ process twoBit {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    faToTwoBit $repeats ${prefix}.2bit
+    faToTwoBit -long ${inSeqFile} ${inSeqFile.baseName}.2bit
     """
 }
 
@@ -97,9 +97,9 @@ process genBatches {
   script:
   def prefix = task.ext.prefix ?: "${meta.id}"
   """
-  ${workflow.projectDir}/genBEDBatches.pl $genome_2bit $batchSize
+  ${workflow.projectDir}/genBEDBatches.pl ${inSeqFile.baseName}.2bit $batchSize
   
-  twoBitToFa -bed=*.bed $genome_2bit ${prefix}.fa
+  twoBitToFa -bed=*.bed ${inSeqFile.baseName} ${prefix}.fa
 
   """
 }
