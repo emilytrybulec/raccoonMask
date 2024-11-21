@@ -17,7 +17,7 @@ include { TE_TRIMMER } from '../modules/local/tetrimmer'
 include { TWO_BIT } from '../modules/local/twoBit' 
 include { REPEAT_VIEW } from '../modules/local/repeat_visualization' 
 include { MC_HELPER } from '../modules/local/mchelper' 
-include { SEQKIT; warmupRepeatMasker; twoBit; genBatches; RepeatMasker; combineRMOUTOutput; combineRMAlignOutput } from '../modules/local/repeatmasker_faster' 
+include { genSample; warmupRepeatMasker; twoBit; genBatches; RepeatMasker; combineRMOUTOutput; combineRMAlignOutput } from '../modules/local/repeatmasker_faster' 
 
 
 /*
@@ -72,8 +72,8 @@ workflow REPEAT_CURATION {
         } else {ch_species = params.species}
 
         if (params.cluster == "xanadu"){
-            SEQKIT(ch_genome_fasta)
-            warmupRepeatMasker(SEQKIT.out.out, ch_species)
+            genSample(ch_genome_fasta)
+            warmupRepeatMasker(genSample.out.out, ch_species)
             twoBit(ch_genome_fasta)
 
             twoBit.out.out    
