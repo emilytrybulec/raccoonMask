@@ -6,7 +6,7 @@ use Data::Dumper;
 # NOTE: This is set by the Nextflow script
 my $ucscBinDir = "";
 
-my $containerImage = "singularity exec https://depot.galaxyproject.org/singularity/ucsc-twobitinfo:472--h9b8f530_0";
+my $containerImage = "singularity run https://depot.galaxyproject.org/singularity/ucsc-twobitinfo:472--h9b8f530_0";
 
 # Check if UCSC tools directory is set in the environment
 if ( defined $ENV{'UCSCTOOLSDIR'} && -d $ENV{'UCSCTOOLSDIR'} && -s $ENV{'UCSCTOOLSDIR'} . "/twoBitInfo" ) {
