@@ -15,10 +15,8 @@ process SEQKIT {
 
   script:
   """
-  awk '
-  BEGIN {seq_id=""; seq=""; srand()}
-  {
-      if (\$0 ~ /^>/) {
+  awk ' BEGIN {seq_id=""; seq=""; srand()}
+  { if (\$0 ~ /^>/) {
           # Process the previous sequence if it exists and has the required length
           if (seq_id != "" && length(seq) >= 25000) {
               start = int(rand() * (length(seq) - 25000 + 1)) + 1
