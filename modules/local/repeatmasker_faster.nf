@@ -103,7 +103,7 @@ process twoBittoFa {
         'biocontainers/ucsc-twobittofa:472--h9b8f530_0' }"
 
   input:
-  tuple val(meta), file(inSeqFile), file(batch_bed) , emit: bed
+  tuple val(meta), file(inSeqFile), file(batch_bed)
 
   output:
   tuple val(meta), path("*.fa") , emit: out
