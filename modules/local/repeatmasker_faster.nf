@@ -22,7 +22,7 @@ process genSample {
 
 process warmupRepeatMasker {
   tag "$meta.id"
-  label 'process_mid'
+  label 'process_medium'
 
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/repeatmasker:4.1.7p1--pl5321hdfd78af_1' :
@@ -74,7 +74,7 @@ process twoBit {
 }
 process genBatches {
   tag "$meta.id"
-  label 'process_mid'
+  label 'process_medium'
 
   input:
   tuple val(meta), path(warmuplog)
@@ -91,7 +91,7 @@ process genBatches {
   """
 }
 process twoBittoFa {
-  label 'process_mid'
+  label 'process_low'
 
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/ucsc-twobittofa:472--h9b8f530_0' :
@@ -113,7 +113,7 @@ process twoBittoFa {
 
 process RepeatMasker {
   tag "$meta.id"
-  label 'process_mid'
+  label 'process_medium'
 
   input:
   tuple val(meta), path(curation_fasta), path(batch_file)
@@ -144,7 +144,7 @@ process RepeatMasker {
 }
 
 process combineRMOUTOutput {
-  label 'process_mid'
+  label 'process_medium'
 
   input:
   tuple file(outfiles), file(twoBitFile) 
@@ -168,7 +168,7 @@ process combineRMOUTOutput {
 }
 
 process combineRMAlignOutput {
-  label 'process_mid'
+  label 'process_medium'
 
   input:
   tuple file(alignfiles), file(twoBitFile) 
