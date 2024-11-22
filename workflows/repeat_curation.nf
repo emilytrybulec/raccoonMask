@@ -102,7 +102,7 @@ workflow REPEAT_CURATION {
                 .set{ch_align_combine}
 
             combineRMOUTOutput(ch_output_combine)
-            combineRMAlignOutput(ch_align_combine)
+            combineRMAlignOutput(ch_align_combine, combineRMOUTOutput.out.trans)
             
             combineRMAlignOutput.out.align
                 .set{repeatMasker_align}
