@@ -144,14 +144,15 @@ process RepeatMasker {
 }
 
 process combineRMOUTOutput {
+  label 'process_mid'
 
   input:
-  tuple file(twoBitFile), file(outfiles) 
+  tuple file(outfiles), file(twoBitFile) 
 
   output:
-  file("*.rmout.gz")
-  file("*.summary")
-  file("combOutSorted-translation.tsv") 
+  file("*.rmout.gz"), emit: out
+  file("*.summary"), emit: summary
+  file("combOutSorted-translation.tsv"), emit: trans 
   
   script:
   """
@@ -161,20 +162,20 @@ process combineRMOUTOutput {
   grep -v -e "^\$" combOut | sort -k5,5 -k6,6n -T ${workflow.workDir} >> combOutSorted
   ${projectDir}/assets/renumberIDs.pl combOutSorted > combOutSortedRenumbered
   mv translation-out.tsv combOutSorted-translation.tsv
-  export PATH=${ucscToolsDir}/\$PATH
-  ${repeatMaskerDir}/util/buildSummary.pl -genome ${twoBitFile} -useAbsoluteGenomeSize combOutSortedRenumbered > ${twoBitFile.baseName}.summary
+  /core/labs/Oneill/jstorer/RepeatMasker/util/buildSummary.pl -genome ${twoBitFile} -useAbsoluteGenomeSize combOutSortedRenumbered > ${twoBitFile.baseName}.summary
   gzip -c combOutSortedRenumbered > ${twoBitFile.baseName}.rmout.gz
   """
 }
 
 process combineRMAlignOutput {
+  label 'process_mid'
 
   input:
-  tuple file(twoBitFile), file(alignfiles) 
+  tuple file(alignfiles), file(twoBitFile) 
   file transFile 
   
   output:
-  file("*.rmalign.gz")
+  file("*.rmalign.gz"), emit: align
 
   script:
   """
