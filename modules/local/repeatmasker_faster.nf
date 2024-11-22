@@ -150,9 +150,9 @@ process combineRMOUTOutput {
   tuple file(outfiles), file(twoBitFile) 
 
   output:
-  file("*.rmout.gz"), emit: out
-  file("*.summary"), emit: summary
-  file("combOutSorted-translation.tsv"), emit: trans 
+  tuple val(meta), path("*.rmout.gz"), emit: out
+  tuple val(meta), path("*.summary"), emit: summary
+  tuple val(meta), path("combOutSorted-translation.tsv"), emit: trans 
   
   script:
   """
@@ -175,7 +175,7 @@ process combineRMAlignOutput {
   file transFile 
   
   output:
-  file("*.rmalign.gz"), emit: align
+  tuple val(meta), path("*.rmalign.gz"), emit: align
 
   script:
   """
