@@ -92,8 +92,22 @@ workflow REPEAT_CURATION {
                 .set{ch_rm_batches}
 
             RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
-            repeatMasker_fasta = Channel.empty()
-            repeatMasker_align = Channel.empty()
+
+            RepeatMasker.out.out
+                .combine(twoBit.out.out)
+                .set{ch_output_combine}
+
+            RepeatMasker.out.align
+                .combine(twoBit.out.out)
+                .set{ch_align_combine}
+
+            combineRMOUTOutput(ch_output_combine)
+            combineRMAlignOutput(ch_align_combine)
+            
+            combineRMAlignOutput.out.align
+                .set{repeatMasker_align}
+            RepeatMasker.out.masked
+                .set{repeatMasker_fasta}
 
         } else {
             REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, ch_species, params.soft_mask)
