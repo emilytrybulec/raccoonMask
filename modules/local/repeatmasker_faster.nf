@@ -134,7 +134,8 @@ process RepeatMasker {
   #
   # Run RepeatMasker
   #
-  /core/labs/Oneill/jstorer/RepeatMasker/RepeatMasker -s -e ncbi $libOpt -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >& ${batch_file.baseName}.rmlog
+
+  /core/labs/Oneill/jstorer/RepeatMasker/RepeatMasker -s -e ncbi $libOpt -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >| ${batch_file.baseName}.rmlog 2>&1
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
   cp ${batch_file.baseName}.fa.out ${batch_file.baseName}.fa.out.unadjusted
