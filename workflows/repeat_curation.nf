@@ -110,7 +110,11 @@ workflow REPEAT_CURATION {
                 .set{repeatMasker_fasta}
 
         } else {
-            REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, ch_species, params.soft_mask)
+            if(params.species == null){
+                REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask)
+            } else {
+                REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask)
+            }
             repeatMasker_fasta = REPEAT_MASKER.out.fasta
             repeatMasker_align = REPEAT_MASKER.out.align
 
