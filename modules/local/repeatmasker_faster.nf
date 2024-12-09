@@ -135,7 +135,7 @@ process RepeatMasker {
   # Run RepeatMasker
   #
 
-  ln -s /usr/lib/x86_64-linux-gnu/libpcre.so.3
+  ln -s /usr/lib/x86_64-linux-gnu/libpcre.so*
 
   /isg/shared/apps/RepeatMasker/4.1.5/RepeatMasker -s -e ncbi $libOpt -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >| ${batch_file.baseName}.rmlog 2>&1
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
