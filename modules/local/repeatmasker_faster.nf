@@ -116,7 +116,7 @@ process RepeatMasker {
   label 'process_medium'
 
   input:
-  tuple val(meta), path(curation_fasta), path(batch_file)
+  tuple val(meta), path(batch_file), path(curation_fasta)
   val species
   val soft_mask
 
