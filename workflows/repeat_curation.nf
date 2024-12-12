@@ -101,8 +101,13 @@ workflow REPEAT_CURATION {
                 .set{ch_rm_batches}
 
             RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
-            
-            batches_meta
+
+            ch_batches
+                .flatten()
+                .map{ file -> tuple(file.baseName, file) }
+                .set{batches_bed_meta}
+                
+            batches_bed_meta
                 .join(RepeatMasker.out.out)
                 .join(RepeatMasker.out.align)
                 .set{ch_rmout}
