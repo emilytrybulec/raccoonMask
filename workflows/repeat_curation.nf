@@ -17,7 +17,7 @@ include { TE_TRIMMER } from '../modules/local/tetrimmer'
 include { TWO_BIT } from '../modules/local/twoBit' 
 include { REPEAT_VIEW } from '../modules/local/repeat_visualization' 
 include { MC_HELPER } from '../modules/local/mchelper' 
-include { genSample; warmupRepeatMasker; twoBit; genBatches; twoBittoFa; RepeatMasker; combineRMOUTOutput; combineRMAlignOutput } from '../modules/local/repeatmasker_faster' 
+include { genSample; warmupRepeatMasker; twoBit; genBatches; twoBittoFa; RepeatMasker; adjCoordinates; combineRMOUTOutput; combineRMAlignOutput } from '../modules/local/repeatmasker_faster' 
 
 
 /*
@@ -101,12 +101,19 @@ workflow REPEAT_CURATION {
                 .set{ch_rm_batches}
 
             RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
+            
+            batches_meta
+                .join(RepeatMasker.out.out)
+                .join(RepeatMasker.out.align)
+                .set{ch_rmout}
 
-            RepeatMasker.out.out
+            adjCoordinates(ch_rmout)
+
+            adjCoordinates.out.out
                 .combine(twoBit.out.out)
                 .set{ch_output_combine}
 
-            RepeatMasker.out.align
+            adjCoordinates.out.align
                 .combine(twoBit.out.out)
                 .set{ch_align_combine}
 
