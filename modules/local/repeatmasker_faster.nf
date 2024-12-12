@@ -115,6 +115,10 @@ process RepeatMasker {
   tag "$meta"
   label 'process_medium'
 
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/repeatmasker:4.1.7p1--pl5321hdfd78af_1' :
+        'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_1' }"
+
   input:
   tuple val(meta), path(batch_file), path(curation_fasta)
   val species
@@ -135,12 +139,34 @@ process RepeatMasker {
   # Run RepeatMasker
   #
 
-  ln -s /usr/lib/x86_64-linux-gnu/libpcre.so.3
+  RepeatMasker -s -e ncbi $libOpt -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >| ${batch_file.baseName}.rmlog 2>&1
+  """
+}
+process adjCoordinates {
+  tag "$meta"
+  label 'process_low'
 
-  /isg/shared/apps/RepeatMasker/4.1.2/RepeatMasker/RepeatMasker -s -e ncbi $libOpt -pa $task.cpus -a $soft_mask ${batch_file.baseName}.fa >| ${batch_file.baseName}.rmlog 2>&1
-  ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.out 
-  ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${batch_file.baseName}.fa.align
-  cp ${batch_file.baseName}.fa.out ${batch_file.baseName}.fa.out.unadjusted
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/repeatmasker:4.1.7p1--pl5321hdfd78af_1' :
+        'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_1' }"
+
+  input:
+  tuple val(meta), path(batch_file), path(out), path(align)
+
+  output:
+  tuple val(meta), path("*.out") , emit: out
+  tuple val(meta), path("*.align") , emit: align
+
+  script:
+
+  """
+  #
+  # Adjust Output
+  #
+
+  ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${out}
+  ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${align}
+  cp ${out} ${batch_file.baseName}.fa.out.unadjusted
   mv ${batch_file.baseName}.fa.out.adjusted ${batch_file.baseName}.fa.out
   mv ${batch_file.baseName}.fa.align.adjusted ${batch_file.baseName}.fa.align
   """
