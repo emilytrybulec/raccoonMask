@@ -2,7 +2,7 @@
 use strict;
 use Data::Dumper;
 # NOTE: This is set by the Nextflow script prior to invocation
-use lib $ENV{'REPEATMASKER_DIR'};
+use lib "/core/labs/Oneill/jstorer/RepeatMasker"
 use SearchResult;
 use SearchResultCollection;
 use CrossmatchSearchEngine;
