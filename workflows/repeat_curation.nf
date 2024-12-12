@@ -88,7 +88,16 @@ workflow REPEAT_CURATION {
             twoBittoFa(ch_batches_2bit)
 
             twoBittoFa.out.out
-                .combine(ch_consensus_fasta)
+                .flatten()
+                .map{ file -> tuple(file.baseName, file) }
+                .set{batches_meta}
+
+            ch_consensus_fasta
+                .map{it[1]}
+                .set{consensus_nometa}
+
+            batches_meta
+                .combine(consensus_nometa)
                 .set{ch_rm_batches}
 
             RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
