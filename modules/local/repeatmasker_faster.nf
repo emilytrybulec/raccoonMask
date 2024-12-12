@@ -112,7 +112,7 @@ process twoBittoFa {
 }
 
 process RepeatMasker {
-  tag "$meta.id"
+  tag "$meta"
   label 'process_medium'
 
   input:
