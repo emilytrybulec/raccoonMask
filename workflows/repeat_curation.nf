@@ -115,11 +115,29 @@ workflow REPEAT_CURATION {
             adjCoordinates(ch_rmout)
 
             adjCoordinates.out.out
-                .combine(twoBit.out.out)
+                .map {it[1]}
+                .set{out_nometa}
+            adjCoordinates.out.align
+                .map {it[1]}
+                .set{align_nometa}
+
+            out_nometa
+                .collect()
+                .set{ch_out}
+            align_nometa
+                .collect()
+                .set{ch_align}
+
+            twoBit.out.out
+                .map { file -> tuple(file.baseName, file) }
+                .set{twoBit_meta}
+
+            twoBit_meta
+                .combine(ch_out)
                 .set{ch_output_combine}
 
-            adjCoordinates.out.align
-                .combine(twoBit.out.out)
+            twoBit_meta    
+                .combine(ch_align)
                 .set{ch_align_combine}
 
             combineRMOUTOutput(ch_output_combine)
