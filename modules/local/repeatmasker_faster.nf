@@ -170,7 +170,7 @@ process combineRMOUTOutput {
   label 'process_medium'
 
   input:
-  tuple val(meta), file(outfiles), file(twoBitFile) 
+  tuple val(meta), file(twoBitFile), file(outfiles)
 
   output:
   tuple val(meta), path("*.rmout.gz"), emit: out
@@ -194,7 +194,7 @@ process combineRMAlignOutput {
   label 'process_medium'
 
   input:
-  tuple val(meta), file(alignfiles), file(twoBitFile) 
+  tuple val(meta), file(twoBitFile), file(alignfiles)
   file transFile 
   
   output:
