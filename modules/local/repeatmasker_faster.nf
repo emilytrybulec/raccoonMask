@@ -150,8 +150,8 @@ process adjCoordinates {
   tuple val(meta), path(batch_file), path(out), path(align)
 
   output:
-  tuple val(meta), path("*.out") , emit: out
-  tuple val(meta), path("*.align") , emit: align
+  tuple val(meta), path("*.out.adjusted") , emit: out
+  tuple val(meta), path("*.align.adjusted") , emit: align
 
   script:
 
@@ -163,8 +163,6 @@ process adjCoordinates {
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${out}
   ${projectDir}/assets/adjCoordinates.pl ${batch_file} ${align}
   cp ${out} ${batch_file.baseName}.fa.out.unadjusted
-  mv ${batch_file.baseName}.fa.out.adjusted ${batch_file.baseName}.fa.out
-  mv ${batch_file.baseName}.fa.align.adjusted ${batch_file.baseName}.fa.align
   """
 }
 
