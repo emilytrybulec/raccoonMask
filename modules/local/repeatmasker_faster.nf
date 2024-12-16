@@ -180,13 +180,14 @@ process combineRMOUTOutput {
   
   script:
   """
+  cp ${twoBitFile} ./local.2bit
   for f in ${outfiles}; do cat \$f >> combOut; done
   echo "   SW   perc perc perc  query     position in query    matching          repeat       position in repeat" > combOutSorted
   echo "score   div. del. ins.  sequence  begin end   (left)   repeat            class/family begin  end    (left)  ID" >> combOutSorted
   grep -v -e "^\$" combOut | sort -k5,5 -k6,6n -T ${workflow.workDir} >> combOutSorted
   ${projectDir}/assets/renumberIDs.pl combOutSorted > combOutSortedRenumbered
   mv translation-out.tsv combOutSorted-translation.tsv
-  /core/labs/Oneill/jstorer/RepeatMasker/util/buildSummary.pl -genome ${twoBitFile} -useAbsoluteGenomeSize combOutSortedRenumbered > ${twoBitFile.baseName}.summary
+  /core/labs/Oneill/jstorer/RepeatMasker/util/buildSummary.pl -genome local.2bit -useAbsoluteGenomeSize combOutSortedRenumbered > ${twoBitFile.baseName}.summary
   gzip -c combOutSortedRenumbered > ${twoBitFile.baseName}.rmout.gz
   """
 }
