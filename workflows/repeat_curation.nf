@@ -132,16 +132,8 @@ workflow REPEAT_CURATION {
                 .map { file -> tuple(file.baseName, file) }
                 .set{twoBit_meta}
 
-            twoBit_meta
-                .combine(ch_out)
-                .set{ch_output_combine}
-
-            twoBit_meta    
-                .combine(ch_align)
-                .set{ch_align_combine}
-
-            combineRMOUTOutput(ch_output_combine)
-            combineRMAlignOutput(ch_align_combine, combineRMOUTOutput.out.trans)
+            combineRMOUTOutput(twoBit_meta, ch_out)
+            combineRMAlignOutput(twoBit_meta, ch_align, combineRMOUTOutput.out.trans)
             
             combineRMAlignOutput.out.align
                 .set{repeatMasker_align}
