@@ -176,6 +176,7 @@ process combineRMOUTOutput {
   output:
   tuple val(meta), path("*.rmout.gz"), emit: out
   tuple val(meta), path("*.summary"), emit: summary
+  tuple val(meta), path(*.bed)
   path("combOutSorted-translation.tsv"), emit: trans 
   
   script:
@@ -189,6 +190,7 @@ process combineRMOUTOutput {
   mv translation-out.tsv combOutSorted-translation.tsv
   /core/labs/Oneill/jstorer/RepeatMasker/util/buildSummary.pl -genome local.2bit -useAbsoluteGenomeSize combOutSortedRenumbered > ${twoBitFile.baseName}.summary
   gzip -c combOutSortedRenumbered > ${twoBitFile.baseName}.rmout.gz
+  rm_to_bed.py combOutSortedRenumbered ${twoBitFile.baseName}.bed
   """
 }
 
@@ -212,5 +214,26 @@ process combineRMAlignOutput {
   ${projectDir}/assets/bedToAlign.pl tmp.bed.sorted > combAlign-sorted
   ${projectDir}/assets/renumberIDs.pl -translation ${transFile} combAlign-sorted > combAlign-sorted-renumbered
   gzip -c combAlign-sorted-renumbered > ${twoBitFile.baseName}.rmalign.gz
+  """
+}
+
+process makeMaskedFasta {
+  label 'process_low'
+
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+     'https://depot.galaxyproject.org/singularity/bedtools:2.31.1--hf5e1c6e_2' :
+     'biocontainers/bedtools:2.31.1--hf5e1c6e_2' }"
+
+  input:
+  tuple val(meta), path(bed), path(genome)
+  val soft_mask
+  
+  output:
+  tuple val(meta), path("*.masked"), emit: masked
+
+  script:
+  def soft_mask_opt = soft_mask ? "-soft" : ''
+  """
+  bedtools maskfasta -fi $genome -bed $bed $soft_mask_opt -fo ${bed.baseName}.fa.masked
   """
 }
