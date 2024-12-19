@@ -134,12 +134,19 @@ workflow REPEAT_CURATION {
 
             combineRMOUTOutput(twoBit_meta, ch_out)
             combineRMAlignOutput(twoBit_meta, ch_align, combineRMOUTOutput.out.trans)
-            
+
             combineRMAlignOutput.out.align
                 .set{repeatMasker_align}
-            RepeatMasker.out.masked
-                .set{repeatMasker_fasta}
 
+            ch_genome_fasta
+                .combine(combineRMOUTOutput.out.bed)
+                .set{masked_ch}
+
+            makeMaskedFasta(masked_ch, ch_species)
+
+            makeMaskedFasta.out.masked
+                .set{repeatMasker_fasta}
+            
         } else {
             if(params.species == null){
                 REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask)
