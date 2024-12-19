@@ -176,7 +176,7 @@ process combineRMOUTOutput {
   output:
   tuple val(meta), path("*.rmout.gz"), emit: out
   tuple val(meta), path("*.summary"), emit: summary
-  tuple val(meta), path(*.bed)
+  tuple val(meta), path("*.bed"), emit: bed
   path("combOutSorted-translation.tsv"), emit: trans 
   
   script:
