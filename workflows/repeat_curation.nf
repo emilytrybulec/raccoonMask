@@ -156,12 +156,11 @@ workflow REPEAT_CURATION {
             repeatMasker_fasta = REPEAT_MASKER.out.fasta
             repeatMasker_align = REPEAT_MASKER.out.align
 
+        
+       }
         TWO_BIT(repeatMasker_fasta)
 
         REPEAT_VIEW(repeatMasker_align, TWO_BIT.out.out)
-       }
-
-
     }
 
 
