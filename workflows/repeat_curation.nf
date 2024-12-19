@@ -17,7 +17,7 @@ include { TE_TRIMMER } from '../modules/local/tetrimmer'
 include { TWO_BIT } from '../modules/local/twoBit' 
 include { REPEAT_VIEW } from '../modules/local/repeat_visualization' 
 include { MC_HELPER } from '../modules/local/mchelper' 
-include { genSample; warmupRepeatMasker; twoBit; genBatches; twoBittoFa; RepeatMasker; adjCoordinates; combineRMOUTOutput; combineRMAlignOutput } from '../modules/local/repeatmasker_faster' 
+include { genSample; warmupRepeatMasker; twoBit; genBatches; twoBittoFa; RepeatMasker; adjCoordinates; combineRMOUTOutput; combineRMAlignOutput; makeMaskedFasta } from '../modules/local/repeatmasker_faster' 
 
 
 /*
