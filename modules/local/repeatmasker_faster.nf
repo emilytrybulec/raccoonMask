@@ -190,7 +190,7 @@ process combineRMOUTOutput {
   mv translation-out.tsv combOutSorted-translation.tsv
   /core/labs/Oneill/jstorer/RepeatMasker/util/buildSummary.pl -genome local.2bit -useAbsoluteGenomeSize combOutSortedRenumbered > ${twoBitFile.baseName}.summary
   gzip -c combOutSortedRenumbered > ${twoBitFile.baseName}.rmout.gz
-  rm_to_bed.py combOutSortedRenumbered ${twoBitFile.baseName}.bed
+  ${projectDir}/assets/rm_to_bed.py combOutSortedRenumbered ${twoBitFile.baseName}.bed
   """
 }
 
