@@ -176,7 +176,7 @@ process combineRMOUTOutput {
   output:
   tuple val(meta), path("*.rmout.gz"), emit: out
   tuple val(meta), path("*.summary"), emit: summary
-  tuple val(meta), path("*.bed"), emit: bed
+  path("*.bed"), emit: bed
   path("combOutSorted-translation.tsv"), emit: trans 
   
   script:
@@ -225,7 +225,7 @@ process makeMaskedFasta {
      'biocontainers/bedtools:2.31.1--hf5e1c6e_2' }"
 
   input:
-  tuple val(meta), path(bed), path(genome)
+  tuple val(meta), path(genome), path(bed)
   val soft_mask
   
   output:
