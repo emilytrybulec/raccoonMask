@@ -55,7 +55,8 @@ workflow REPEAT_CURATION {
             }
         }
     } else if (params.MC_helper == true){
-        MC_HELPER(ch_consensus_fasta, ch_genome_fasta, params.gene_ref)
+        ch_gene_ref = Channel.fromPath(params.gene_ref)
+        MC_HELPER(ch_consensus_fasta, ch_genome_fasta, ch_gene_ref)
 
         if (params.repeat_masker == true){
             if(params.species == null){
