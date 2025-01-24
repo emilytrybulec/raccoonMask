@@ -18,6 +18,7 @@ include { TWO_BIT } from '../modules/local/twoBit'
 include { REPEAT_VIEW } from '../modules/local/repeat_visualization' 
 include { MC_HELPER } from '../modules/local/mchelper' 
 include { genSample; warmupRepeatMasker; twoBit; genBatches; twoBittoFa; RepeatMasker; adjCoordinates; combineRMOUTOutput; combineRMAlignOutput; makeMaskedFasta } from '../modules/local/repeatmasker_faster' 
+include { PIPERepeatMasker; PIPEadjCoordinates; PIPEcombineRMOUTOutput; PIPEcombineRMAlignOutput; PIPEmakeMaskedFasta } from '../modules/local/pipe_repeatmasker_faster' 
 
 
 /*
@@ -64,10 +65,91 @@ workflow REPEAT_CURATION {
 
         if (params.repeat_masker == true){
             if(params.species == null){
-                PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, [], params.soft_mask)
-            } else {
-                PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, params.species, params.soft_mask)
-            }
+                ch_species = Channel.empty()
+            } else {ch_species = params.species}
+
+            if (params.cluster == "xanadu" || params.cluster == "mantis"){
+
+            genSample(ch_genome_fasta)
+            warmupRepeatMasker(PIPEgenSample.out.out, ch_species)
+            twoBit(ch_genome_fasta)
+            genBatches(warmupRepeatMasker.out.out, params.batchSize, twoBit.out.out)
+
+            genBatches.out.bed
+                .flatten()
+                .set{ch_batches}
+
+            ch_batches
+                .combine(twoBit.out.out)
+                .set{ch_batches_2bit}
+
+            twoBittoFa(ch_batches_2bit)
+
+            twoBittoFa.out.out
+                .flatten()
+                .map{ file -> tuple(file.baseName, file) }
+                .set{batches_meta}
+
+            MC_HELPER.out.fasta
+                .map{it[1]}
+                .set{pipe_consensus_nometa}
+
+            batches_meta
+                .combine(pipe_consensus_nometa)
+                .set{pipe_ch_rm_batches}
+
+            PIPERepeatMasker(pipe_ch_rm_batches, ch_species, params.soft_mask)
+
+            ch_batches
+                .flatten()
+                .map{ file -> tuple(file.baseName, file) }
+                .set{pipe_batches_bed_meta}
+                
+            pipe_batches_bed_meta
+                .join(PIPERepeatMasker.out.out)
+                .join(PIPERepeatMasker.out.align)
+                .set{pipe_ch_rmout}
+
+            PIPEadjCoordinates(pipe_ch_rmout)
+
+            PIPEadjCoordinates.out.out
+                .map {it[1]}
+                .set{pipe_out_nometa}
+            PIPEadjCoordinates.out.align
+                .map {it[1]}
+                .set{pipe_align_nometa}
+
+            pipe_out_nometa
+                .collect()
+                .set{pipe_ch_out}
+            pipe_align_nometa
+                .collect()
+                .set{pipe_ch_align}
+
+            PIPEtwoBit.out.out
+                .map { file -> tuple(file.baseName, file) }
+                .set{pipe_twoBit_meta}
+
+            PIPEcombineRMOUTOutput(pipe_twoBit_meta, pipe_ch_out)
+            PIPEcombineRMAlignOutput(pipe_twoBit_meta, pipe_ch_align, PIPEcombineRMOUTOutput.out.trans)
+
+            PIPEcombineRMAlignOutput.out.align
+                .set{pipe_repeatMasker_align}
+
+            ch_genome_fasta
+                .combine(PIPEcombineRMOUTOutput.out.bed)
+                .set{pipe_masked_ch}
+
+            PIPEmakeMaskedFasta(pipe_masked_ch, ch_species)
+
+            PIPEmakeMaskedFasta.out.masked
+                .set{pipe_repeatMasker_fasta}
+            else {
+                if(params.species == null){
+                    PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, [], params.soft_mask)
+                } else {
+                    PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, params.species, params.soft_mask)
+            }}
         pipe_repeatMasker_fasta = PIPE_REPEAT_MASKER.out.fasta
         pipe_repeatMasker_align = PIPE_REPEAT_MASKER.out.align
         } else {
@@ -81,7 +163,8 @@ workflow REPEAT_CURATION {
             ch_species = Channel.empty()
         } else {ch_species = params.species}
 
-        if (params.cluster == "xanadu"){
+        if (params.cluster == "xanadu" || params.cluster == "mantis"){
+            if (params.MC_helper == false){
             genSample(ch_genome_fasta)
             warmupRepeatMasker(genSample.out.out, ch_species)
             twoBit(ch_genome_fasta)
@@ -101,7 +184,7 @@ workflow REPEAT_CURATION {
                 .flatten()
                 .map{ file -> tuple(file.baseName, file) }
                 .set{batches_meta}
-
+            } 
             ch_consensus_fasta
                 .map{it[1]}
                 .set{consensus_nometa}
@@ -157,7 +240,7 @@ workflow REPEAT_CURATION {
             makeMaskedFasta.out.masked
                 .set{repeatMasker_fasta}
             
-        } else {
+        }} else {
             if(params.species == null){
                 REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask)
             } else {
