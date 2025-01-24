@@ -6,8 +6,7 @@ process REPEAT_VIEW {
     container 'library://etrybulec/te_tools2/repeatmasker:sha256.7782aab984b57dbc8c3ff0b554e4f60cd6a1b34f45479ea97866f8fcf0b824d8'
 
     input:
-    tuple val(meta), path(align)
-    tuple val(meta), path(twoBit)
+    tuple val(meta), path(align), path(twoBit)
 
 
     output:
