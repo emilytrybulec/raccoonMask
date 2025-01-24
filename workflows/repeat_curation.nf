@@ -144,14 +144,15 @@ workflow REPEAT_CURATION {
 
             PIPEmakeMaskedFasta.out.masked
                 .set{pipe_repeatMasker_fasta}
-            else {
+            } else {
                 if(params.species == null){
                     PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, [], params.soft_mask)
                 } else {
                     PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, params.species, params.soft_mask)
-            }}
-        pipe_repeatMasker_fasta = PIPE_REPEAT_MASKER.out.fasta
-        pipe_repeatMasker_align = PIPE_REPEAT_MASKER.out.align
+                }
+            pipe_repeatMasker_fasta = PIPE_REPEAT_MASKER.out.fasta
+            pipe_repeatMasker_align = PIPE_REPEAT_MASKER.out.align
+        }
         } else {
         pipe_repeatMasker_fasta = Channel.empty()
         pipe_repeatMasker_align = Channel.empty()
@@ -240,7 +241,7 @@ workflow REPEAT_CURATION {
             makeMaskedFasta.out.masked
                 .set{repeatMasker_fasta}
             
-        }} else {
+        } else {
             if(params.species == null){
                 REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask)
             } else {
@@ -248,8 +249,6 @@ workflow REPEAT_CURATION {
             }
             repeatMasker_fasta = REPEAT_MASKER.out.fasta
             repeatMasker_align = REPEAT_MASKER.out.align
-
-        
        }
         repeatMasker_fasta
             .concat(pipe_repeatMasker_fasta)
