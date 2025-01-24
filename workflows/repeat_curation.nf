@@ -12,7 +12,7 @@ include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pi
 include { REPEATMODELER_BUILDDATABASE } from '../modules/nf-core/repeatmodeler/builddatabase/main' 
 include { REPEATMODELER_REPEATMODELER } from '../modules/nf-core/repeatmodeler/repeatmodeler/main' 
 include { REPEAT_MASKER } from '../modules/local/repeatmasker' 
-include { REPEAT_MASKER_2 } from '../modules/local/repeatmasker2' 
+include { REPEAT_MASKER_2 as PIPE_REPEAT_MASKER} from '../modules/local/repeatmasker2' 
 include { TE_TRIMMER } from '../modules/local/tetrimmer' 
 include { TWO_BIT } from '../modules/local/twoBit' 
 include { REPEAT_VIEW } from '../modules/local/repeat_visualization' 
@@ -49,20 +49,30 @@ workflow REPEAT_CURATION {
         
         if (params.repeat_masker == true){
             if(params.species == null){
-                REPEAT_MASKER_2(TE_TRIMMER.out.fasta, ch_genome_fasta, [], params.soft_mask)
+                PIPE_REPEAT_MASKER(TE_TRIMMER.out.fasta, ch_genome_fasta, [], params.soft_mask)
             } else {
-                REPEAT_MASKER_2(TE_TRIMMER.out.fasta, ch_genome_fasta, params.species, params.soft_mask)
+                PIPE_REPEAT_MASKER(TE_TRIMMER.out.fasta, ch_genome_fasta, params.species, params.soft_mask)
             }
+        pipe_repeatMasker_fasta = PIPE_REPEAT_MASKER.out.fasta
+        pipe_repeatMasker_align = PIPE_REPEAT_MASKER.out.align
+        } else{ 
+        pipe_repeatMasker_fasta = Channel.empty()
+        pipe_repeatMasker_align = Channel.empty()
         }
     } else if (params.MC_helper == true){
         MC_HELPER(ch_consensus_fasta, ch_genome_fasta, params.gene_ref)
 
         if (params.repeat_masker == true){
             if(params.species == null){
-                REPEAT_MASKER_2(MC_HELPER.out.fasta, ch_genome_fasta, [], params.soft_mask)
+                PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, [], params.soft_mask)
             } else {
-                REPEAT_MASKER_2(MC_HELPER.out.fasta, ch_genome_fasta, params.species, params.soft_mask)
+                PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, params.species, params.soft_mask)
             }
+        pipe_repeatMasker_fasta = PIPE_REPEAT_MASKER.out.fasta
+        pipe_repeatMasker_align = PIPE_REPEAT_MASKER.out.align
+        } else {
+        pipe_repeatMasker_fasta = Channel.empty()
+        pipe_repeatMasker_align = Channel.empty()
         }
     }
 
@@ -158,9 +168,21 @@ workflow REPEAT_CURATION {
 
         
        }
-        TWO_BIT(repeatMasker_fasta)
+        repeatMasker_fasta
+            .concat(pipe_repeatMasker_fasta)
+            .set{ch_Masker_fasta}
 
-        REPEAT_VIEW(repeatMasker_align, TWO_BIT.out.out)
+        repeatMasker_align
+            .concat(pipe_repeatMasker_align)
+            .set{ch_Masker_align}
+        
+        TWO_BIT(ch_Masker_fasta)
+
+        ch_Masker_align
+            .join(TWO_BIT.out.out)
+            .set{ch_repeat_view}
+
+        REPEAT_VIEW(ch_repeat_view)
     }
 
 
