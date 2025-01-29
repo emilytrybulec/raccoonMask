@@ -2,7 +2,7 @@ process MC_HELPER {
     tag "$meta.id"
     label 'process_low'
 
-    container 'docker://plantgenomics/mchelper:1.6.6.0'
+    container 'docker://wilsonleunggep/mchelper:v0'
 
     input:
     tuple val(meta), path(lib)
