@@ -153,11 +153,11 @@ workflow REPEAT_CURATION {
             pipe_repeatMasker_fasta = PIPE_REPEAT_MASKER.out.fasta
             pipe_repeatMasker_align = PIPE_REPEAT_MASKER.out.align
         }
-        } else {
+        }} else {
         pipe_repeatMasker_fasta = Channel.empty()
         pipe_repeatMasker_align = Channel.empty()
         }
-    }
+    
 
     if (params.repeat_masker == true){
         if(params.species == null){
