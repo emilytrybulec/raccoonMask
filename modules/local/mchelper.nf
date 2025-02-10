@@ -33,7 +33,7 @@ process MC_HELPER {
         -o ${prefix} \\
         -g $genome \\
         --input_type fasta \\
-        -b $genes \\
+        $genes \\
         -a F -z 10 -c 3 -v Y
     """
 }
