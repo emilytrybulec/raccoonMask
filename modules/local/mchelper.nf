@@ -20,6 +20,11 @@ process MC_HELPER {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def genes = ref_genes ? "-b $ref_genes" : ""
     """
+    set +e  # Disable 'exit on error'
+    set +u  # Disable 'treat unset variables as errors'
+    set +o pipefail  # Allow pipelines to continue
+    set +C  # Disable 'no clobber'
+
     source /opt/conda/etc/profile.d/conda.sh
     conda activate MCHelper
 
