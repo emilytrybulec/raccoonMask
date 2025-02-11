@@ -257,6 +257,7 @@ workflow REPEAT_CURATION {
         repeatMasker_align
             .concat(pipe_repeatMasker_align)
             .set{ch_Masker_align}
+        ch_Masker_align.view()
         
         TWO_BIT(ch_Masker_fasta)
 
