@@ -1,6 +1,6 @@
 process MC_HELPER {
     tag "$meta.id"
-    label 'process_low'
+    label 'process_high'
 
     container 'docker://plantgenomics/mchelper:1.6.6.0'
 
