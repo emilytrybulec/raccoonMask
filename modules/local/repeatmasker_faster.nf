@@ -2,10 +2,9 @@ process genSample {
   tag "$meta.id"
   label 'process_low'
 
-  conda "bioconda::seqkit=2.4.0"
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/seqkit:2.4.0--h9ee0642_0':
-        'biocontainers/seqkit:2.4.0--h9ee0642_0' }"
+        'https://depot.galaxyproject.org/singularity/bioawk:1.0--hed695b0_5':
+        'biocontainers/bioawk:1.0--hed695b0_5' }"
 
   input:
   tuple val(meta), path(genome_fasta)
@@ -15,7 +14,7 @@ process genSample {
 
   script:
   """
-  awk 'BEGIN {seq_id=""; seq=""; srand()} {if (\$0 ~ /^>/) {if (seq_id != "" && length(seq) >= 25000) {start = int(rand() * (length(seq) - 25000 + 1)) + 1; print seq_id; print substr(seq, start, 25000); exit} seq_id = \$0; seq = ""} else {seq = seq \$0}} END {if (seq_id != "" && length(seq) >= 25000) {start = int(rand() * (length(seq) - 25000 + 1)) + 1; print seq_id; print substr(seq, start, 25000)}}' $genome_fasta > sample.fasta
+  bioawk -c fastx '{if (length($seq) >= 25000) {start = int(rand() * (length($seq) - 25000 + 1)) + 1; print ">" $name; print substr($seq, start, 25000); exit}}' $genome_fasta > sample.fasta
 
   """
 }
