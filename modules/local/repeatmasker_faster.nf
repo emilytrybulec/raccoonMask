@@ -14,7 +14,7 @@ process genSample {
 
   script:
   """
-  bioawk -c fastx '{if (length($seq) >= 25000) {start = int(rand() * (length($seq) - 25000 + 1)) + 1; print ">" $name; print substr($seq, start, 25000); exit}}' $genome_fasta > sample.fasta
+  bioawk -c fastx '{if (length(\$seq) >= 25000) {start = int(rand() * (length(\$seq) - 25000 + 1)) + 1; print ">" \$name; print substr(\$seq, start, 25000); exit}}' $genome_fasta > sample.fasta
 
   """
 }
