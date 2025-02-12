@@ -260,6 +260,7 @@ workflow REPEAT_CURATION {
         ch_Masker_align.view()
         
         TWO_BIT(ch_Masker_fasta)
+        TWO_BIT.out.out.view()
 
         ch_Masker_align
             .join(TWO_BIT.out.out)
