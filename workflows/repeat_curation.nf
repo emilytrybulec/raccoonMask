@@ -87,7 +87,7 @@ workflow REPEAT_CURATION {
 
             twoBittoFa.out.out
                 .flatten()
-                .map{ file -> tuple(file.baseName, file) }
+                .map { file -> tuple(id: file.baseName, file)  }
                 .set{batches_meta}
 
             MC_HELPER.out.fasta
@@ -102,7 +102,7 @@ workflow REPEAT_CURATION {
 
             ch_batches
                 .flatten()
-                .map{ file -> tuple(file.baseName, file) }
+                .map { file -> tuple(id: file.baseName, file)  }
                 .set{pipe_batches_bed_meta}
                 
             pipe_batches_bed_meta
@@ -127,7 +127,7 @@ workflow REPEAT_CURATION {
                 .set{pipe_ch_align}
 
             PIPEtwoBit.out.out
-                .map { file -> tuple(file.baseName, file) }
+                .map { file -> tuple(id: file.baseName, file)  }
                 .set{pipe_twoBit_meta}
 
             PIPEcombineRMOUTOutput(pipe_twoBit_meta, pipe_ch_out)
@@ -183,7 +183,7 @@ workflow REPEAT_CURATION {
 
             twoBittoFa.out.out
                 .flatten()
-                .map{ file -> tuple(file.baseName, file) }
+                .map { file -> tuple(id: file.baseName, file)  }
                 .set{batches_meta}
             } 
             ch_consensus_fasta
@@ -198,7 +198,7 @@ workflow REPEAT_CURATION {
 
             ch_batches
                 .flatten()
-                .map{ file -> tuple(file.baseName, file) }
+                .map { file -> tuple(id: file.baseName, file)  }
                 .set{batches_bed_meta}
                 
             batches_bed_meta
@@ -223,7 +223,7 @@ workflow REPEAT_CURATION {
                 .set{ch_align}
 
             twoBit.out.out
-                .map { file -> tuple(file.baseName, file) }
+                .map { file -> tuple(id: file.baseName, file)  }
                 .set{twoBit_meta}
 
             combineRMOUTOutput(twoBit_meta, ch_out)
