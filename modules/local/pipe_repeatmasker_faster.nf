@@ -10,7 +10,6 @@ process PIPERepeatMasker {
   tuple val(meta), path(batch_file), path(curation_fasta)
   val species
   val soft_mask
-  path libdir
 
   output:
   tuple val(meta), path("*.out") , emit: out
@@ -20,7 +19,7 @@ process PIPERepeatMasker {
   script:
   def species = species ? "-species ${species}" : ''
   def soft_mask = soft_mask ? "-xsmall" : ''
-  def libOpt = libdir ? "-libdir ${libdir} -species ${species}" : lib.contains('.fa') ? "-lib ${curation_fasta}" :  "-species ${species}"
+  def libOpt = lib.contains('.fa') ? "-lib ${curation_fasta}" :  "-species ${species}"
   """
   #
   # Run RepeatMasker
