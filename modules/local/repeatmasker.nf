@@ -27,12 +27,13 @@ process REPEAT_MASKER {
     def prefix = task.ext.prefix ?: "repeatmask_${meta.id}"
     def soft_mask = soft_mask ? "-xsmall" : ''
     def species = species ? "-species ${species}" : ''
+    def libOpt = libdir ? "-libdir ${libdir} -species ${species}" : lib.contains('.fa') ? "-lib ${curation_fasta}" :  "-species ${species}"
+
     """
     RepeatMasker -s \\
           -e ncbi \\
-          -lib $curation_fasta \\
+          $libOpt \\
           $soft_mask \\
-          $species \\
           -pa $task.cpus \\
 	  -a \\
           $genome_fasta
