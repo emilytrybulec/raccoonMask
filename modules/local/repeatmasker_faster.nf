@@ -133,7 +133,7 @@ process RepeatMasker {
   def species = species ? "-species ${species}" : ''
   def soft_mask = soft_mask ? "-xsmall" : ''
   def lib = "${curation_fasta}"
-  def libOpt = libdir ? "-libdir ${libdir} -species ${species}" : lib.contains('.fa') ? "-lib $curation_fasta" :  "-species ${species}"
+  def libOpt = libdir ? "-libdir ${libdir} -species ${species}" : lib.contains('.fa') ? "-lib ${curation_fasta}" :  "-species ${species}"
   """
   #
   # Run RepeatMasker
