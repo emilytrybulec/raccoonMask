@@ -56,9 +56,17 @@ workflow REPEAT_CURATION {
         
         if (params.repeat_masker == true){
             if(params.species == null){
-                PIPE_REPEAT_MASKER(TE_TRIMMER.out.fasta, ch_genome_fasta, [], params.soft_mask)
+                if (params.libdir == null){
+                    PIPE_REPEAT_MASKER(TE_TRIMMER.out.fasta, ch_genome_fasta, [], params.soft_mask, [])
+                } else {
+                    PIPE_REPEAT_MASKER(TE_TRIMMER.out.fasta, ch_genome_fasta, [], params.soft_mask, params.libdir)
+                }  
             } else {
-                PIPE_REPEAT_MASKER(TE_TRIMMER.out.fasta, ch_genome_fasta, params.species, params.soft_mask)
+                if (params.libdir == null){
+                    PIPE_REPEAT_MASKER(TE_TRIMMER.out.fasta, ch_genome_fasta, params.species, params.soft_mask, [])
+                } else {
+                    PIPE_REPEAT_MASKER(TE_TRIMMER.out.fasta, ch_genome_fasta, params.species, params.soft_mask, params.libdir)
+                }        
             }
         pipe_repeatMasker_fasta = PIPE_REPEAT_MASKER.out.fasta
         pipe_repeatMasker_align = PIPE_REPEAT_MASKER.out.align
@@ -152,9 +160,17 @@ workflow REPEAT_CURATION {
                 .set{pipe_repeatMasker_fasta}
             } else {
                 if(params.species == null){
-                    PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, [], params.soft_mask, ch_libdir)
+                    if (params.libdir == null){
+                        PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, [], params.soft_mask, [])
+                    } else {
+                        PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, [], params.soft_mask, params.libdir)
+                    }
                 } else {
-                    PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, params.species, params.soft_mask, ch_libdir)
+                    if (params.libdir == null){
+                        PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, params.species, params.soft_mask, [])
+                    } else {
+                        PIPE_REPEAT_MASKER(MC_HELPER.out.fasta, ch_genome_fasta, params.species, params.soft_mask, params.libdir)
+                    }
                 }
             pipe_repeatMasker_fasta = PIPE_REPEAT_MASKER.out.fasta
             pipe_repeatMasker_align = PIPE_REPEAT_MASKER.out.align
@@ -252,9 +268,17 @@ workflow REPEAT_CURATION {
             
         } else {
             if(params.species == null){
-                REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask, ch_libdir)
+                if (params.libdir == null){
+                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask, [])
+                } else {
+                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask, params.libdir)
+                } 
             } else {
-                REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask, ch_libdir)
+                if (params.libdir == null){
+                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask, [])
+                } else {
+                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask, params.libdir)
+                }
             }
             repeatMasker_fasta = REPEAT_MASKER.out.fasta
             repeatMasker_align = REPEAT_MASKER.out.align
