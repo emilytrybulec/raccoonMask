@@ -119,10 +119,9 @@ process RepeatMasker {
         'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_1' }"
 
   input:
-  tuple val(meta), path(batch_file), path(curation_fasta)
+  tuple val(meta), path(batch_file), path(curation_fasta), path(libDir)
   val species
   val soft_mask
-  path (libDir)
 
   output:
   tuple val(meta), path("*.out") , emit: out
