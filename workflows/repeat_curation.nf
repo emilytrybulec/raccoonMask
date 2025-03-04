@@ -200,7 +200,7 @@ workflow REPEAT_CURATION {
                 .combine(consensus_nometa)
                 .set{ch_rm_batches}
 
-            RepeatMasker(ch_rm_batches, ch_species, params.soft_mask, ch_libdir)
+            RepeatMasker(ch_rm_batches, ch_species, params.soft_mask, params.libdir)
 
             ch_batches
                 .flatten()
