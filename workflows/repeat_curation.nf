@@ -112,7 +112,11 @@ workflow REPEAT_CURATION {
                 .combine(pipe_consensus_nometa)
                 .set{pipe_ch_rm_batches}
 
-            PIPERepeatMasker(pipe_ch_rm_batches, ch_species, params.soft_mask)
+            if (params.libdir == null){
+                PIPERepeatMasker(pipe_ch_rm_batches, ch_species, params.soft_mask, [])
+            } else {
+                PIPERepeatMasker(pipe_ch_rm_batches, ch_species, params.soft_mask, params.libdir)
+            }
 
             ch_batches
                 .flatten()
