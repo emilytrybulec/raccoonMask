@@ -44,7 +44,7 @@ workflow REPEAT_CURATION {
             .map { file -> tuple(id: file.baseName, file)  }
             .set { ch_consensus_fasta }
     } else {
-        ch_consensus_fasta = Channel.empty()
+        ch_consensus_fasta = Channel.fromPath(params.libdir) 
     }
 
     if (params.libdir == null){
@@ -212,7 +212,7 @@ workflow REPEAT_CURATION {
             if (params.libdir == null){
                 RepeatMasker(ch_rm_batches, ch_species, params.soft_mask, [])
             } else {
-                RepeatMasker(ch_rm_batches, ch_species, params.soft_mask, params.libdir)
+                RepeatMasker(ch_rm_batches, ch_species, params.soft_mask, [])
             }
 
             ch_batches
@@ -265,13 +265,13 @@ workflow REPEAT_CURATION {
                 if (params.libdir == null){
                     REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask, [])
                 } else {
-                    REPEAT_MASKER([], ch_genome_fasta, [], params.soft_mask, params.libdir)
+                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask, [])
                 } 
             } else {
                 if (params.libdir == null){
                     REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask, [])
                 } else {
-                    REPEAT_MASKER([], ch_genome_fasta, params.species, params.soft_mask, params.libdir)
+                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask, [])
                 }
             }
             repeatMasker_fasta = REPEAT_MASKER.out.fasta
