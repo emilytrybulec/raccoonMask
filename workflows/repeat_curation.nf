@@ -34,15 +34,17 @@ workflow REPEAT_CURATION {
         .map { file -> tuple(id: file.baseName, file)  }
         .set { ch_genome_fasta }
 
-    if (params.consensus_fasta == null) {
+    if (params.consensus_fasta == null && params.libdir == null) {
         REPEATMODELER_BUILDDATABASE(ch_genome_fasta)
         REPEATMODELER_REPEATMODELER(REPEATMODELER_BUILDDATABASE.out.db)
         ch_consensus_fasta = REPEATMODELER_REPEATMODELER.out.fasta
-    } else { 
+    } else if (params.consensus_fasta != null){ 
         ch_consensus = Channel.fromPath(params.consensus_fasta) 
         ch_consensus
             .map { file -> tuple(id: file.baseName, file)  }
             .set { ch_consensus_fasta }
+    } else {
+        ch_consensus = Channel.empty()
     }
 
     if (params.libdir == null){
