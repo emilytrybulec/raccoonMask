@@ -122,7 +122,6 @@ process RepeatMasker {
   tuple val(meta), path(batch_file), path(curation_fasta)
   val species
   val soft_mask
-  path(libDir)
 
   output:
   tuple val(meta), path("*.out") , emit: out
