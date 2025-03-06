@@ -130,11 +130,9 @@ process RepeatMasker {
   tuple val(meta), path("*.masked") , emit: masked
 
   script:
-  def species = species ? "-species ${species}" : ''
   def soft_mask = soft_mask ? "-xsmall" : ''
   def lib = "${curation_fasta}"
-  def libdir = "${libDir}"
-  def libOpt = libdir ? "-libdir ${libdir} -species ${species}" : lib.contains('.fa') ? "-lib ${curation_fasta}" :  "-species ${species}"
+  def libOpt = lib.contains('.fa') ? "-lib ${curation_fasta}" : "-libdir ${libdir} -species ${species}":  "-species ${species}"
   """
   #
   # Run RepeatMasker
