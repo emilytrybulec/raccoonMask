@@ -120,7 +120,7 @@ process RepeatMasker {
 
   input:
   tuple val(meta), path(batch_file), path(curation_fasta)
-  val species
+  val species_param
   val soft_mask
 
   output:
@@ -129,9 +129,10 @@ process RepeatMasker {
   tuple val(meta), path("*.masked") , emit: masked
 
   script:
+  def species = species_param ? "-species ${species_param}" : ''
   def soft_mask = soft_mask ? "-xsmall" : ''
-  def lib = "${curation_fasta}"
-  def libOpt = lib.contains('.fa') ? "-lib ${curation_fasta}" : "-libdir ${curation_fasta} -species ${species}":  "-species ${species}"
+  def lib = "${curation_fasta}" 
+  def libOpt = lib.contains('.fa') ? "-lib ${curation_fasta}" : lib ? "-libdir ${libdir} ${species}" :  "${species}"
   """
   #
   # Run RepeatMasker
