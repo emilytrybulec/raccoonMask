@@ -205,7 +205,7 @@ workflow REPEAT_CURATION {
                 .set{ch_rm_batches} }
             else {
             batches_meta
-                .combine(params.libdir)
+                .combine(ch_libdir)
                 .set{ch_rm_batches}
             }
 
