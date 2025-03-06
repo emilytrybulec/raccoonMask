@@ -210,9 +210,9 @@ workflow REPEAT_CURATION {
             }
 
             if (params.libdir == null){
-                RepeatMasker(ch_rm_batches, ch_species, params.soft_mask, [])
+                RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
             } else {
-                RepeatMasker(ch_rm_batches, ch_species, params.soft_mask, [])
+                RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
             }
 
             ch_batches
