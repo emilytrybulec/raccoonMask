@@ -115,8 +115,8 @@ process RepeatMasker {
   label 'process_medium'
 
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/repeatmasker:4.1.7p1--pl5321hdfd78af_1' :
-        'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_1' }"
+        'https://depot.galaxyproject.org/singularity/repeatmasker:4.1.7p1--pl5321hdfd78af_0' :
+        'biocontainers/repeatmasker:4.1.7p1--pl5321hdfd78af_0' }"
 
   input:
   tuple val(meta), path(batch_file), path(curation_fasta)
