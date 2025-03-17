@@ -28,6 +28,7 @@ process REPEAT_MASKER {
     def prefix = task.ext.prefix ?: "repeatmask_${meta.id}"
     def soft_mask = soft_mask ? "-xsmall" : ''
     def species = species ? "-species ${species}" : ''
+    def lib = "${curation_fasta}"
     def libdir = "${libDir}"
     def libOpt = libdir ? "-libdir ${libdir} -species ${species}" : lib.contains('.fa') ? "-lib ${curation_fasta}" :  "-species ${species}"
 
