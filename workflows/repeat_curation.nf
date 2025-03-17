@@ -265,13 +265,13 @@ workflow REPEAT_CURATION {
                 if (params.libdir == null){
                     REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask, [])
                 } else {
-                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask, [])
+                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, [], params.soft_mask, params.libdir)
                 } 
             } else {
                 if (params.libdir == null){
                     REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask, [])
                 } else {
-                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask, [])
+                    REPEAT_MASKER(ch_consensus_fasta, ch_genome_fasta, params.species, params.soft_mask, params.libdir)
                 }
             }
             repeatMasker_fasta = REPEAT_MASKER.out.fasta
