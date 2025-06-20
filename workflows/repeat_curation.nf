@@ -203,17 +203,19 @@ workflow REPEAT_CURATION {
             batches_meta
                 .combine(consensus_nometa)
                 .set{ch_rm_batches} }
-            else {
+            else if (params.libdir != null){
             batches_meta
                 .combine(ch_libdir)
                 .set{ch_rm_batches}
+            } else {
+            batches_meta
+                .combine(consensus_nometa)
+                .set{ch_rm_batches} }
             }
 
-            if (params.libdir == null){
+
                 RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
-            } else {
-                RepeatMasker(ch_rm_batches, ch_species, params.soft_mask)
-            }
+
 
             ch_batches
                 .flatten()
