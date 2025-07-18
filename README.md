@@ -4,7 +4,7 @@
 
 ## Introduction
 
-**emilytrybulec/repeat_curation** is a bioinformatics pipeline that takes a finished genome and performs repeat analysis. It produces a masked genome (.fasta), files containing coordinates of regions identified as repeats (.bed) for further manual curation, and images depicting output from TE Trimmer (.pdf). 
+**emilytrybulec/raccoonMask** is a bioinformatics pipeline that takes a finished genome and performs repeat analysis. It produces a masked genome (.fasta), files containing coordinates of regions identified as repeats (.bed) for further manual curation, and images depicting output from TE Trimmer (.pdf). 
 
 1. [`Repeat Modeler BuildDatabase`](https://github.com/Dfam-consortium/RepeatModeler/tree/master?tab=readme-ov-file#example-run) 
 2. [`Repeat Modeler`](https://github.com/Dfam-consortium/RepeatModeler)
@@ -54,13 +54,13 @@ params {
 Now, you can run the pipeline using:
 
 ```bash
-nextflow pull emilytrybulec/repeat_curation
-nextflow run emilytrybulec/repeat_curation \
+nextflow pull emilytrybulec/raccoonMask
+nextflow run emilytrybulec/raccoonMask \
    -profile <docker/singularity/.../institute> \
    -params-file params.yaml
 ```
 
-Xanadu users: please refer to the [`example script`](https://github.com/emilytrybulec/repeat_curation/blob/main/nextflow.sh).    
+Xanadu users: please refer to the [`example script`](https://github.com/emilytrybulec/raccoonMask/blob/main/nextflow.sh).    
 
 ### Running TEtrimmer:
 TEtrimmer is currently being run through a clone of the [`git`](https://github.com/qjiangzhao/TEtrimmer/blob/main/README.md) located in the assets folder. Users who would like to run TEtrimmer must create the conda environment before running, in accordance with the TEtrimmer usage directions. 
@@ -75,7 +75,7 @@ The pipeline will automatically activate the conda environment when running TEtr
 
 ## Credits
 
-emilytrybulec/repeat_curation was originally written by Emily Trybulec with the help of Jessica Storer.
+emilytrybulec/raccoonMask was originally written by Emily Trybulec with the help of Jessica Storer.
 
 
 ## Contributions and Support
@@ -83,7 +83,7 @@ emilytrybulec/repeat_curation was originally written by Emily Trybulec with the 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## Citations
-If you use emilytrybulec/repeat_curation for your analysis, please cite it using this git.
+If you use emilytrybulec/raccoonMask for your analysis, please cite it using this git.
 
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE).
